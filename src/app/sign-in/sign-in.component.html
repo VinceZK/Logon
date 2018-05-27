@@ -1,0 +1,27 @@
+<form class="dk-form-logon">
+  <div class="text-center dk-mb-4">
+    <!--<img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
+    <h1 class="dk-form-title dk-mb-3 font-weight-normal">Logon Portal</h1>
+  </div>
+
+  <div class="dk-form-label-group">
+    <input type="email" id="inputEmail" name="inputEmail" #inputEmail class="form-control dk-form-control"
+           [(ngModel)]="user.email" placeholder="Email address" required="" autofocus="">
+    <label for="inputEmail">Email address</label>
+  </div>
+
+  <div class="dk-form-label-group">
+    <input type="password" id="inputPassword" name="inputPassword" #inputPassword class="form-control dk-form-control"
+           [(ngModel)]="user.password" placeholder="Password" required="">
+    <label for="inputPassword">Password</label>
+  </div>
+
+  <div class="checkbox dk-mb-3">
+    <label>
+      <input type="checkbox" value="remember-me"> Remember me
+    </label>
+  </div>
+  <button class="btn dk-btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+  <p>{{user.email}}; {{user.password}}</p>
+</form>
