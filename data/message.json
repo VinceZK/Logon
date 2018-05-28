@@ -1,0 +1,14 @@
+[
+  { "msgCat": "LOGON",
+    "msgName": "USER_PASSWORD_WRONG",
+    "msgText": {
+      "EN": {"shortText": "User name or password wrong"}
+    }
+  },
+  { "msgCat": "LOGON",
+    "msgName": "RENEW_PASSWORD",
+    "msgText": {
+      "EN": {"shortText": "Please renew password"}
+    }
+  }
+]

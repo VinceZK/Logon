@@ -17,9 +17,15 @@ app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'dist/Logon')));
 
 
-// Send all other requests to the Angular app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/Logon/index.html'));
+// Routing
+const routes = require('./server/server_routes');
+app.use('/', routes);
+
+app.set('port', process.env.PORT || 3000);
+
+process.on('SIGINT',function(){
+  console.log("Closing.....");
+  process.exit()
 });
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+app.listen(app.get('port'), () => console.log('Example app listening on port 3000!'));
