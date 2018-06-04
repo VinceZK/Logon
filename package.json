@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "prod": "node server.js"
+    "prod": "node $NODE_DEBUG_OPTION server.js"
   },
   "dependencies": {
     "@angular/animations": "^6.0.3",
@@ -22,7 +22,9 @@
     "@angular/platform-browser": "^6.0.3",
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
+    "body-parser": "^1.18.3",
     "bootstrap": "^4.1.1",
+    "cookie-parser": "^1.4.3",
     "core-js": "^2.5.7",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
@@ -31,7 +33,7 @@
     "path": "^0.12.7",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.0.0-rc.0",
-    "ui-message": "^0.0.4",
+    "ui-message": "^0.0.8",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -67,7 +69,7 @@
     "nodejs",
     "angular"
   ],
-  "author": "vincezk",
+  "author": "VinceZk",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/VinceZK/Logon/issues"

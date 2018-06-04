@@ -1,5 +1,17 @@
 [
   { "msgCat": "LOGON",
+    "msgName": "ERROR",
+    "msgText": {
+      "EN": {"shortText": "Error: %s"}
+    }
+  },
+  { "msgCat": "LOGON",
+    "msgName": "LOGON_SUCCESS",
+    "msgText": {
+      "EN": {"shortText": "User logon successfully"}
+    }
+  },
+  { "msgCat": "LOGON",
     "msgName": "USER_PASSWORD_WRONG",
     "msgText": {
       "EN": {"shortText": "User name or password wrong"}

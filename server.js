@@ -12,14 +12,17 @@ app.use(session({
   resave: false,
   cookie: {httpOnly: false }
 }));
+app.use(require('cookie-parser')());
+app.use(require('body-parser').json());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'dist/Logon')));
-
 
 // Routing
 const routes = require('./server/server_routes');
 app.use('/', routes);
+
+// angular启动页
+app.use(express.static(path.join(__dirname, 'dist/Logon')));
 
 app.set('port', process.env.PORT || 3000);
 
