@@ -11,4 +11,5 @@ router.all('/api/*', Auth.ensureAuthenticated);
 // Identity APIs.
 router.post('/api/renewPWD',Auth.renewPWD);
 
+
 module.exports = router;

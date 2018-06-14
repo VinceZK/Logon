@@ -1,8 +1,9 @@
 import {AutofillMonitor} from '@angular/cdk/text-field';
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 import {User} from '../user';
 import {LogonService} from '../logon.service';
-import {Message, MessageService, messageType} from 'ui-message/dist/message';
+import {Message, MessageService} from 'ui-message/dist/message';
 
 @Component({
   selector: 'app-sign-in',
@@ -14,8 +15,11 @@ export class SignInComponent implements OnInit, OnDestroy {
   @ViewChild('inputPassword', {read: ElementRef}) inputPassword: ElementRef;
 
   user: User = new User;
+  isWaiting = false;
 
-  constructor(private autofill: AutofillMonitor,
+  constructor(@Inject(DOCUMENT)
+              private document: any,
+              private autofill: AutofillMonitor,
               private logonService: LogonService,
               private messageService: MessageService) { }
 
@@ -30,14 +34,15 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   logon(): void {
+    this.isWaiting = true;
     this.logonService.logon(this.user.userid, this.user.password).subscribe(
       data => {
-        if (data.msgCat) {
-          this.messageService.reportMessage(<Message>data);
-        } else if (data.userid) {
-          this.user = data;
+        this.isWaiting = false;
+        if (data.err) {
+          this.messageService.report(<Message>data.err);
         } else {
-          // TODO this.messageService.report('GEN_ERROR');
+          this.user = data.user;
+          this.document.location.href = 'http://localhost:3001/dashboard';
         }
       }
     );

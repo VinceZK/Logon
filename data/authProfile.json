@@ -1,0 +1,16 @@
+[
+    {   "AuthObject": "user",
+        "AuthFieldValue":{
+            "Group": ["Ordinary, Admin"],
+            "Action": ["Create","Edit","Display","Delete","Lock","Unlock"]
+        }
+    },
+    {
+        "AuthObject": "blog",
+        "AuthFieldValue":{
+            "Tag": "*",
+            "ID": [{"Operator":"Between", "Option":"Include", "Low":0, "High":1999999}],
+            "Action": ["Add", "Edit", "Display", "Delete"]
+        }
+    }
+]
