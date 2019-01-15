@@ -148,7 +148,7 @@ You can find another difference of the above 2 approaches. The second one uses A
 Thus you use attribute "redirectPath" instead of "redirectUrl", which will redirect to a Angular component.
 
 ### Define Logon Strategy
-PassportJS already provides a flexible way to let use different authentication strategy. 
+PassportJS already provides a flexible way to let use different authentication strategies. 
 Since we mainly use the basic user&password strategy, so just register a LocalStrategy is enough.
 The default implementation is given bellow:
 ```javascript 1.8
