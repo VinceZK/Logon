@@ -1,0 +1,13 @@
+<h4>
+  Logon Successfully
+</h4>
+
+<div class="btn-group" role="group">
+  <button type="button" class="btn dk-btn-lg btn-primary" (click)="logout()">Logout</button>
+  <button type="button" class="btn dk-btn-lg btn-primary" (click)="session()">Get Session</button>
+  <button type="button" class="btn dk-btn-lg btn-primary" (click)="query()">Query</button>
+  <button type="button" class="btn dk-btn-lg btn-primary" (click)="read()">Read</button>
+</div>
+<div class="container">
+  <pre>{{result | json}}</pre>
+</div>

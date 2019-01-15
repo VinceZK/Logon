@@ -15,6 +15,14 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ui-logon-angular": [
+        "dist/logon"
+      ],
+      "ui-logon-angular/*": [
+        "dist/logon/*"
+      ]
+    }
   }
 }

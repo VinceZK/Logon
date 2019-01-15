@@ -1,40 +1,63 @@
+const debug = require('debug')('Logon: bootstrap');
 const express = require('express');
-const session = require('express-session');
-const redisStore = require('connect-redis')(session);
-const passport = require('passport');
-const compress = require('compression');
-const path = require('path');
-
 const app = express();
 
 // Static stuff before session is initialized
-app.use(express.static(path.join(__dirname, 'dist/Logon')));
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'dist/LogonApp')));
 
+// Register involved middleware
+const session = require('express-session');
+const redisStore = require('connect-redis')(session);
 app.use(session({
   name: 'sessionID',
   secret:'darkhouse',
   saveUninitialized: false,
-  store: new redisStore(),
+  store: new redisStore(), // Start ./redis-server in ~/workspace/redis-4.0.9/src/
   unset: 'destroy', //Only for Redis session store
   resave: false,
   cookie: {httpOnly: false, maxAge: 15 * 60 * 1000 }
 }));
-app.use(require('cookie-parser')());
+
+app.use(require('cors')()); // Allow cross site requests
 app.use(require('body-parser').json());
+const passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(compress());
-
+app.use(require('compression')());
 
 // Routing
-const routes = require('./server/server_routes');
-app.use('/', routes);
+const jor = require('json-on-relations');
+const router = require('./server/router');
+router.use(jor.Routes); // JOR APIs
+router.get('*', (req, res) => { // Open the index.html
+  res.sendFile(path.join(__dirname, 'dist/LogonApp/index.html'));
+});
+app.use('/', router);
 
+// Load Authentication
+require('./server/Authentication')(jor);
+require('./server/controller/permission_ctrl');
+
+// Set the port and bootstrap
 app.set('port', process.env.PORT || 3000);
-
 process.on('SIGINT',function(){
   console.log("Closing.....");
   process.exit()
 });
 
-app.listen(app.get('port'), () => console.log('Example app listening on port 3000!'));
+jor.EntityDB.executeSQL('select ENTITY_ID from ENTITY', function (err, rows) {
+  if (err) debug("bootstrap: get entities==> %s", err);
+  else {
+    const entities = [];
+    rows.forEach(row => entities.push(row.ENTITY_ID));
+    jor.EntityDB.loadEntities(entities, function (err) {
+      if (err) debug("bootstrap: load entities==> %s", err);
+      else
+        app.listen(app.get('port'), () => console.log('Example app listening on port 3000!'));
+    })
+  }
+});
+
+
+

@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/Logon",
+            "outputPath": "dist/LogonApp",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -111,6 +111,46 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "logon": {
+      "root": "projects/logon",
+      "sourceRoot": "projects/logon/src",
+      "projectType": "library",
+      "prefix": "dk",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/logon/tsconfig.lib.json",
+            "project": "projects/logon/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/logon/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/logon/src/test.ts",
+            "tsConfig": "projects/logon/tsconfig.spec.json",
+            "karmaConfig": "projects/logon/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/logon/tsconfig.lib.json",
+              "projects/logon/tsconfig.spec.json"
+            ],
             "exclude": [
               "**/node_modules/**"
             ]

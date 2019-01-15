@@ -1,0 +1,29 @@
+<form class="dk-form-logon" (ngSubmit)="logon()">
+  <fieldset [disabled]="isWaiting">
+    <div class="text-center dk-mb-4">
+      <!--<img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
+      <h1 class="dk-form-title dk-mb-3 font-weight-normal">{{title}}</h1>
+    </div>
+
+    <div class="dk-message-area">
+      <dk-message></dk-message>
+    </div>
+
+    <div class="dk-form-label-group">
+      <input type="text" id="inputUserID" name="inputUserID" #inputUserID class="form-control dk-form-control"
+             [(ngModel)]="user.userid" placeholder="User ID" required="" autofocus="">
+      <label for="inputUserID">{{userLabel}}</label>
+    </div>
+
+    <div class="dk-form-label-group">
+      <input type="password" id="inputPassword" name="inputPassword" #inputPassword class="form-control dk-form-control"
+             [(ngModel)]="user.password" placeholder="Password" required="">
+      <label for="inputPassword">{{pwdLabel}}</label>
+    </div>
+
+    <button class="btn dk-btn-lg btn-primary btn-block" type="submit">
+      <i *ngIf="isWaiting" class="fas fa-spinner fa-spin"></i> {{btnLabel}}
+    </button>
+  </fieldset>
+</form>
+

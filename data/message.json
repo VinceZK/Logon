@@ -22,5 +22,17 @@
     "msgText": {
       "EN": {"shortText": "Please renew password"}
     }
+  },
+  { "msgCat": "PERMISSION",
+    "msgName": "QUERY_PERMISSION",
+    "msgText": {
+      "EN": {"shortText": "You don't have permission on querying entity '%s' and its relation '%s'"}
+    }
+  },
+  { "msgCat": "PERMISSION",
+    "msgName": "READ_PERMISSION",
+    "msgText": {
+      "EN": {"shortText": "You don't have permission on reading entity '%s'"}
+    }
   }
 ]
