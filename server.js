@@ -30,7 +30,7 @@ app.use(require('compression')());
 const jor = require('json-on-relations');
 const router = require('./server/router');
 router.use(jor.Routes); // JOR APIs
-router.get('*', (req, res) => { // Open the index.html
+router.get('*', (req, res) => { // Ensure refreshing into index.html
   res.sendFile(path.join(__dirname, 'dist/LogonApp/index.html'));
 });
 app.use('/', router);

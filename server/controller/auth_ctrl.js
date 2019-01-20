@@ -36,11 +36,16 @@ module.exports = {
     }
   },
 
+  checkAuthenticated: function (req, res) {
+    res.json(req.isAuthenticated()? 'authenticated': 'unauthenticated');
+  },
+
   ensureAuthenticated: function (req, res, next) {
     if (req.isAuthenticated()) {
       next(); //Continue
     } else {
-      res.status(401).send('Unauthenticated!');
+      // res.status(401).send('Unauthenticated!');
+      res.redirect(301, '../logon');
     }
   },
 

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
 import {MessageService, messageType} from 'ui-message-angular';
 import {msgStore} from './msgStore';
 import {QueryObject} from './user';
+import {Observable, of} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })

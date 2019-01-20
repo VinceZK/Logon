@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 import {LogonService} from '../logon.service';
-import {MessageService} from 'ui-message-angular';
 import {QueryObject} from '../user';
 
 @Component({
@@ -12,7 +11,6 @@ export class LandingPageComponent implements OnInit {
   result: any;
 
   constructor(private router: Router,
-              private messageService: MessageService,
               private logonService: LogonService) { }
 
   ngOnInit() {

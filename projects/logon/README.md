@@ -2,7 +2,7 @@
 
 Refer [UI-Logon](https://www.npmjs.com/package/ui-logon).
  
-![Logon Page](../../logon.png)
+![Logon Page](logon.png)
 
 
 ## License

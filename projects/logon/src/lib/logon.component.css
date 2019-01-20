@@ -33,6 +33,7 @@
 .dk-form-control {
   font-size: 1rem;
   border-radius: .25rem;
+  height: calc(2.9rem + 2px);
 }
 .dk-form-label-group > input,
 .dk-form-label-group > label {
