@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
   redirectPath: '',
-  redirectUrl: '/portal',
+  redirectUrl: '/portal/external-app/Modeling',
   host: 'https://darkhouse.com.cn'
 };

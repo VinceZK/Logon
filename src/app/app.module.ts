@@ -10,7 +10,7 @@ const appRoutes: Routes = [
   {
     path: '', component: LogonComponent,
     data: {
-      title: 'Logon Portal', userLabel: 'User ID', pwdLabel: 'Password', btnLabel: 'Sign In',
+      title: 'Logon Portal (DH001/Dark1234)', userLabel: 'User ID', pwdLabel: 'Password', btnLabel: 'Sign In',
       redirectPath: environment.redirectPath, redirectUrl: environment.redirectUrl, host: environment.host
     }
   },
