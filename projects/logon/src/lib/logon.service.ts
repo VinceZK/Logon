@@ -12,40 +12,44 @@ const httpOptions = {
 
 @Injectable({providedIn: 'root'})
 export class LogonService {
-  private logonUrl = 'api/logon';
-  private logoutUrl = 'api/logout';
-  private queryUrl = 'api/query';
-  private entityUrl = 'api/entity';
+  private host = '';
   constructor(private http: HttpClient,
               private messageService: MessageService) {
     this.messageService.setMessageStore(msgStore, 'EN');
   }
 
+  setHost(host: string) {
+    this.host = host;
+  }
+
   logon(userid: string, password: string): Observable<any> {
-    return this.http.post<any>(this.logonUrl, {username: userid, password: password}, httpOptions).pipe(
+    return this.http.post<any>(
+      this.host ? this.host + '/api/logon' : 'api/logon',
+      {username: userid, password: password}, httpOptions).pipe(
       catchError(this.handleError<any>('Logon')));
   }
 
   logout(): Observable<any> {
-    return this.http.delete<any>(this.logoutUrl, httpOptions).pipe(
+    return this.http.delete<any>(this.host ? this.host + '/api/logout' : 'api/logout', httpOptions).pipe(
       catchError(this.handleError<any>('Logout'))
     );
   }
 
   session(): Observable<any> {
-    return this.http.get<any>('api/session', httpOptions).pipe(
+    return this.http.get<any>(this.host ? this.host + '/api/session' : 'api/session', httpOptions).pipe(
       catchError(this.handleError<any>('Get session'))
     );
   }
 
   query(queryObject: QueryObject): Observable<any> {
-    return this.http.post<any>(this.queryUrl, queryObject, httpOptions).pipe(
+    return this.http.post<any>(this.host ? this.host + '/api/query' : 'api/query', queryObject, httpOptions).pipe(
       catchError(this.handleError<any>('query')));
   }
 
   read(instanceGUID: string): Observable<any> {
-    return this.http.get<any>(this.entityUrl + `/instance/${instanceGUID}`).pipe(
-      catchError(this.handleError<any>('read')));
+    return this.http.get<any>(
+      this.host ? this.host + `/api/entity/instance/${instanceGUID}` : `api/entity/instance/${instanceGUID}`)
+      .pipe( catchError(this.handleError<any>('read')));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

@@ -24,6 +24,7 @@ export class LogonComponent implements OnInit, OnDestroy {
   @Input() btnLabel = 'Logon';
   @Input() redirectUrl = '';
   @Input() redirectPath = '';
+  @Input() host = '';
 
   constructor(@Inject(DOCUMENT)
               private document: any,
@@ -42,6 +43,8 @@ export class LogonComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data['btnLabel']) { this.btnLabel = this.route.snapshot.data['btnLabel']; }
     if (this.route.snapshot.data['redirectUrl']) { this.redirectUrl = this.route.snapshot.data['redirectUrl']; }
     if (this.route.snapshot.data['redirectPath']) { this.redirectPath = this.route.snapshot.data['redirectPath']; }
+    if (this.route.snapshot.data['host']) { this.host = this.route.snapshot.data['host']; }
+    this.logonService.setHost(this.host);
   }
 
   ngOnDestroy() {

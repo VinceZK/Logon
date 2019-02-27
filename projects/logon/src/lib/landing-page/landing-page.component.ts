@@ -19,7 +19,7 @@ export class LandingPageComponent implements OnInit {
   logout(): void {
     this.logonService.logout().subscribe(
       data => {
-        this.router.navigateByUrl('/logon');
+        this.router.navigateByUrl('');
       }
     );
   }

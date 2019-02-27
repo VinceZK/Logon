@@ -1,10 +1,5 @@
 const router = require('express').Router();
 const Auth = require('./controller/auth_ctrl.js');
-const path = require('path');
-
-router.get('/logon', (req, res) => { // Open the index.html
-  res.sendFile(path.join(__dirname, '../dist/LogonApp/index.html'));
-});
 
 // Basic login API with username & password
 router.post('/api/logon', Auth.logon);

@@ -1,6 +1,6 @@
 # UI-Logon
 
-A user&password logon page using Angular6, Express, Passport, node-authorization, and JSON-On-Relations. 
+A user&password logon page using Angular, Express, Passport, node-authorization, and JSON-On-Relations. 
  
 ![Logon Page](logon.png)
 
@@ -64,7 +64,10 @@ After get the above prerequisite done. You can now follow the steps bellow to se
    // Register your Angular built files as static
    const path = require('path');
    app.use(express.static(path.join(__dirname, 'dist/LogonApp')));
-   
+   app.get('/logon', (req, res) => { // Open the logon page
+     res.sendFile(path.join(__dirname, 'dist/LogonApp/index.html'));
+   });
+
    // Register express-session middle ware with redis
    const session = require('express-session');
    const redisStore = require('connect-redis')(session);

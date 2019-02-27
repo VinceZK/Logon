@@ -4,17 +4,18 @@ import { AppComponent } from './app.component';
 import {RouterModule, Routes} from '@angular/router';
 import {LogonComponent, LandingPageComponent} from 'ui-logon-angular';
 import {LogonModule} from 'ui-logon-angular';
+import {environment} from '../environments/environment';
 
 const appRoutes: Routes = [
-  { path: 'landing', component: LandingPageComponent },
   {
-    path: 'logon', component: LogonComponent,
+    path: '', component: LogonComponent,
     data: {
       title: 'Logon Portal', userLabel: 'User ID', pwdLabel: 'Password', btnLabel: 'Sign In',
-      redirectPath: 'landing', redirectUrl: ''
+      redirectPath: environment.redirectPath, redirectUrl: environment.redirectUrl, host: environment.host
     }
   },
-  { path: '**', redirectTo: 'logon', pathMatch: 'full'}
+  { path: 'landing', component: LandingPageComponent },
+  { path: '**', redirectTo: '', pathMatch: 'full'}
 ];
 
 @NgModule({

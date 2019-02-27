@@ -1,6 +1,6 @@
 {
   "name": "ui-logon",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "A logon page in Angular6.",
   "scripts": {
     "ng": "ng",

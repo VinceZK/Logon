@@ -44,8 +44,11 @@ module.exports = {
     if (req.isAuthenticated()) {
       next(); //Continue
     } else {
-      // res.status(401).send('Unauthenticated!');
-      res.redirect(301, '../logon');
+      if (req.url.includes('/api/')) {
+        res.status(401).send('Unauthenticated!');
+      } else {
+        res.redirect(301, '../logon');
+      }
     }
   },
 

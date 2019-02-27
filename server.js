@@ -5,6 +5,9 @@ const app = express();
 // Static stuff before session is initialized
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'dist/LogonApp')));
+app.get('/logon', (req, res) => { // Open the logon page
+  res.sendFile(path.join(__dirname, 'dist/LogonApp/index.html'));
+});
 
 // Register involved middleware
 const session = require('express-session');
