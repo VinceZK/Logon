@@ -48,19 +48,7 @@ process.on('SIGINT',function(){
   console.log("Closing.....");
   process.exit()
 });
-
-jor.EntityDB.executeSQL('select ENTITY_ID from ENTITY', function (err, rows) {
-  if (err) debug("bootstrap: get entities==> %s", err);
-  else {
-    const entities = [];
-    rows.forEach(row => entities.push(row.ENTITY_ID));
-    jor.EntityDB.loadEntities(entities, function (err) {
-      if (err) debug("bootstrap: load entities==> %s", err);
-      else
-        app.listen(app.get('port'), () => console.log('Example app listening on port 3000!'));
-    })
-  }
-});
+app.listen(app.get('port'), () => console.log('Example app listening on port 3000!'));
 
 
 

@@ -13,8 +13,8 @@ import {LogonService} from './logon.service';
 })
 export class LogonComponent implements OnInit, OnDestroy {
 
-  @ViewChild('inputUserID', {read: ElementRef}) inputUserID: ElementRef;
-  @ViewChild('inputPassword', {read: ElementRef}) inputPassword: ElementRef;
+  @ViewChild('inputUserID', { read: ElementRef, static: true }) inputUserID: ElementRef;
+  @ViewChild('inputPassword', { read: ElementRef, static: true }) inputPassword: ElementRef;
 
   user: User = new User;
   isWaiting = false;
@@ -59,7 +59,11 @@ export class LogonComponent implements OnInit, OnDestroy {
         this.isWaiting = false;
         if (!data) { return; }
         if (data.err) {
-          this.messageService.report(<Message>data.err);
+          if (Array.isArray(data.err)) {
+            data.err.forEach( err => this.messageService.add(err));
+          } else {
+            this.messageService.report(<Message>data.err);
+          }
         } else {
           this.user.displayName = data.user['DISPLAY_NAME'];
           this.user.userid = data.user['USER_ID'];
