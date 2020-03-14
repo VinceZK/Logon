@@ -1,0 +1,93 @@
+<div class="dk-auth-main mx-3">
+<div class="btn-toolbar justify-content-end" role="toolbar">
+  <button type="button" id="remove-object" class="btn btn-light btn-sm" (click)="delete()" [disabled]="readonly">
+    <span class="fas fa-minus"></span> Remove</button>
+  <button type="button" id="new" class="btn btn-light btn-sm" (click)="add()" [disabled]="readonly">
+    <span class="fas fa-plus"></span> Add</button>
+</div>
+<table class="table table-bordered table-sm dk-table" [formGroup]="mainForm">
+  <thead class="thead-light">
+  <tr>
+    <th class="dk-checkbox"><input name="btSelectAll" type="checkbox" (click)="checkAll()"></th>
+    <th class="dk-auth-object">Authorization Object / Field</th>
+    <th class="dk-auth-value">Description / Authorization Value</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr *ngFor="let appAuthObjForm of appAuthObjFormArray.controls; let i = index" class="treegrid-expanded"
+      [class.collapsed]="appAuthObjForm.get('ROW_TYPE').value === 'FIELD' && appAuthObjForm.get('COLLAPSED').value">
+    <td class="dk-checkbox" [formGroup]="appAuthObjForm">
+      <input class="form-control form-control-sm" type="checkbox" formControlName="CHECKED" (click)="checkAuthObject(i)">
+    </td>
+    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'OBJECT'" >
+      <span [ngClass]="{'treegrid-expander-expanded': !appAuthObjForm.get('COLLAPSED').value,
+            'treegrid-expander-collapsed': appAuthObjForm.get('COLLAPSED').value}"
+            class="treegrid-expander" (click)="expendCollapse(i)">
+      </span>{{appAuthObjForm.get('OBJ_NAME').value}}
+    </td>
+    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'FIELD'" >
+      <span class="treegrid-indent"></span>
+      <span class="treegrid-expander"></span>
+      {{appAuthObjForm.get('FIELD_NAME').value}}
+    </td>
+    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'OBJECT'">{{appAuthObjForm.get('DESC').value}}</td>
+    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'FIELD'">
+      <a class="nav-link" href="javascript:void(0);" (click)="openAuthValueModal(i)">
+        {{appAuthObjForm.get('DEFAULT_AUTH_VALUE').value? appAuthObjForm.get('DEFAULT_AUTH_VALUE').value
+        : 'Click to maintain'}}</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="modal fade" id="maintainAuthValueDialog" tabindex="-1" role="dialog"
+     [ngClass]="{'show': isAuthValueModalShown}"
+     [ngStyle]="{'display': displayAuthValueModal}">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="maintainAuthValueDialogTitle">Maintain Authorization Value</h5>
+        <button type="button" class="close" (click)="closeAuthValueModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <dk-message></dk-message>
+        <app-auth-value [authFieldValueForm]="currentAuthFieldValueForm" [readonly]="readonly" ></app-auth-value>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" (click)="closeAuthValueModal()">Cancel</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="addAuthValue()" [disabled]="readonly">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addAuthObject" tabindex="-1" role="dialog"
+     [ngClass]="{'show': isAuthObjectModalShown}"
+     [ngStyle]="{'display': displayAuthObjectModal}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAuthObjectTitle">Add Authorization Object</h5>
+        <button type="button" class="close" (click)="closeAuthObjectModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <dk-app-attribute-form2 *ngIf = "newAuthFieldValueForm && authObjAttr"
+                                [attributeControl]="authObjAttr"
+                                [formGroup]="newAuthFieldValueForm"
+                                [isSmallSize] = "true"
+                                [readonly]="false">
+        </dk-app-attribute-form2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" (click)="closeAuthObjectModal()">Cancel</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="addAuthObject()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+### Get pieces of an entity instance through its business ID.
+POST http://localhost:3000/api/entity/instance/piece
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{
+  "ID": { "RELATION_ID": "r_role", "NAME": "Administrator"},
+  "piece": {"RELATIONS": ["permission", "r_role"],
+    "RELATIONSHIPS": [
+      {
+        "RELATIONSHIP_ID": "rs_user_role",
+        "PARTNER_ENTITY_PIECES": { "RELATIONS": ["r_user"] }
+      },
+      {
+        "RELATIONSHIP_ID": "rs_system_role_category",
+        "PARTNER_ENTITY_PIECES": {
+          "RELATIONS": ["r_app_category"],
+          "RELATIONSHIPS": [
+            {
+              "RELATIONSHIP_ID": "rs_app_category",
+              "PARTNER_ENTITY_PIECES": { "RELATIONS": ["app"] }
+            }
+          ]
+        }
+      },
+      {
+        "RELATIONSHIP_ID": "rs_system_role_profile",
+        "PARTNER_ENTITY_PIECES": { "RELATIONS": ["authProfile", "r_authorization"] }
+      }
+    ]
+  }
+}
+
+###
+

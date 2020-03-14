@@ -1,0 +1,49 @@
+<table class="table table-bordered table-sm">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">Operator</th>
+    <th scope="col">Option</th>
+    <th scope="col">{{attrCtrl.label}} (Low)</th>
+    <th scope="col">{{attrCtrl.label}} (High)</th>
+    <th scope="col">Actions</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <tr *ngFor="let selectOptionForm of selectOptionArray.controls; let i = index">
+    <td [formGroup]="selectOptionForm" >
+      <select name="operator" class="form-control form-control-sm" required
+              formControlName="Operator" (change)="onChangeOperator(i)">
+        <option *ngFor="let operator of operatorEnum" [value]="operator">{{operator}}</option>
+      </select>
+    </td>
+    <td [formGroup]="selectOptionForm" >
+      <select name="operator" class="form-control form-control-sm" required formControlName="Option">
+        <option *ngFor="let option of optionEnum" [value]="option">{{option}}</option>
+      </select>
+    </td>
+    <td>
+      <dk-app-attribute [attributeControl]="attrCtrl"
+                        [formGroup]="selectOptionForm"
+                        [isSmallSize] = "true"
+                        [readonly]="readonly">
+      </dk-app-attribute>
+    </td>
+    <td>
+      <dk-app-attribute [attributeControl]="highAttrCtrl"
+                        [formGroup]="selectOptionForm"
+                        [isSmallSize] = "true"
+                        [readonly]="readonly">
+      </dk-app-attribute>
+    </td>
+    <td class="dk-actions">
+      <button class="btn btn-sm" type="button" id="add" [disabled]="readonly" (click)="insertValue(i)" title="Insert">
+        <span class="fas fa-plus"></span>
+      </button>
+      <button class="btn btn-sm" type="button" id="delete" [disabled]="readonly" (click)="deleteValue(i)" title="Delete">
+        <span class="far fa-trash-alt"></span>
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>

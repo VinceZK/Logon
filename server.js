@@ -4,9 +4,9 @@ const app = express();
 
 // Static stuff before session is initialized
 const path = require('path');
-app.use(express.static(path.join(__dirname, 'dist/LogonApp')));
+app.use(express.static(path.join(__dirname, 'dist/permissionApp')));
 app.get('/logon', (req, res) => { // Open the logon page
-  res.sendFile(path.join(__dirname, 'dist/LogonApp/index.html'));
+  res.sendFile(path.join(__dirname, 'dist/permissionApp/index.html'));
 });
 
 // Register involved middleware
@@ -34,13 +34,13 @@ const jor = require('json-on-relations');
 const router = require('./server/router');
 router.use(jor.Routes); // JOR APIs
 router.get('*', (req, res) => { // Ensure refreshing into index.html
-  res.sendFile(path.join(__dirname, 'dist/LogonApp/index.html'));
+  res.sendFile(path.join(__dirname, 'dist/permissionApp/index.html'));
 });
 app.use('/', router);
 
 // Load Authentication
 require('./server/Authentication')(jor);
-require('./server/controller/permission_ctrl');
+// require('./server/controller/permission_ctrl');
 
 // Set the port and bootstrap
 app.set('port', process.env.PORT || 3000);

@@ -1,0 +1,14 @@
+<form class="mt-4 ml-2 row">
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4 dk-form-label"
+                          [attributeControl]="getAttrCtrlFromID('ROUTE_LINK')"
+                          [formGroup]="appTargetForm"
+                          [isSmallSize] = "true"
+                          [readonly]="readonly">
+  </dk-app-attribute-form2>
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4 dk-form-label"
+                          [attributeControl]="getAttrCtrlFromID('IS_EXTERNAL')"
+                          [formGroup]="appTargetForm"
+                          [isSmallSize] = "true"
+                          [readonly]="readonly">
+  </dk-app-attribute-form2>
+</form>

@@ -1,0 +1,17 @@
+.dk-btn-size {
+  font-size: 1.5rem;
+}
+.dk-form-label {
+  font-size: 1.2rem;
+}
+.dk-fixed-top {
+  position: relative;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 500;
+}
+.dk-icon {
+  border: none;
+  font-size: 1.2rem;
+}

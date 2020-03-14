@@ -16,7 +16,8 @@ module.exports = function (jor) {
    */
   passport.use(new LocalStrategy(
     function (username, password, done) {
-      entity.getInstancePieceByID({RELATION_ID: 'r_user', USER_ID: username}, {RELATIONS: ['r_user']}, function (err, data) {
+      entity.getInstancePieceByID({RELATION_ID: 'r_user', USER_ID: username},
+        {RELATIONS: ['r_user', 'r_personalization']}, function (err, data) {
         if (err) return done(err);
 
         if (data['ENTITY_ID']){
@@ -25,6 +26,11 @@ module.exports = function (jor) {
           if (user['PASSWORD'] === password) {
             delete user['PASSWORD'];
             identity['userBasic'] = user;
+            let personalization = data['r_personalization'][0];
+            identity['userBasic']['DATE_FORMAT'] = personalization['DATE_FORMAT'];
+            identity['userBasic']['DECIMAL_FORMAT'] = personalization['DECIMAL_FORMAT'];
+            identity['userBasic']['TIMEZONE'] = personalization['TIMEZONE'];
+            identity['userBasic']['LANGUAGE'] = personalization['LANGUAGE'];
             identity['profile'] =
               compileProfile(JSON.parse(fs.readFileSync(path.join(__dirname, '../data/authProfile.json'), 'utf8')));
             return done(null, identity);

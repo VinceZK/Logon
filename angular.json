@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Logon": {
+    "permission": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -14,7 +14,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
-            "outputPath": "dist/LogonApp",
+            "outputPath": "dist/PermissionApp",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -25,7 +25,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/css/fontawesome-all.css"
+              "src/assets/css/fontawesome.min.css"
             ],
             "scripts": []
           },
@@ -58,18 +58,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "Logon:build"
+            "browserTarget": "permission:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "Logon:build:production"
+              "browserTarget": "permission:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Logon:build"
+            "browserTarget": "permission:build"
           }
         },
         "test": {
@@ -103,7 +103,7 @@
         }
       }
     },
-    "Logon-e2e": {
+    "permission-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -111,7 +111,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "Logon:serve"
+            "devServerTarget": "permission:serve"
           }
         },
         "lint": {
@@ -139,8 +139,8 @@
           },
           "configurations": {
             "production": {
-              "project": "projects/logon/ng-package.prod.json"
-            ,              "tsConfig": "projects/logon/tsconfig.lib.prod.json"
+              "project": "projects/logon/ng-package.prod.json",
+              "tsConfig": "projects/logon/tsconfig.lib.prod.json"
 }
           }
         },
@@ -167,5 +167,5 @@
       }
     }
   },
-  "defaultProject": "Logon"
+  "defaultProject": "permission"
 }

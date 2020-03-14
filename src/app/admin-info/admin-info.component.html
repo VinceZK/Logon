@@ -1,0 +1,26 @@
+<form class="mt-4 ml-2 row">
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4 dk-form-label"
+                          [attributeControl]="getAttrCtrlFromID('CREATED_BY')"
+                          [formGroup]="adminForm"
+                          [isSmallSize] = "true"
+                          [readonly]="true">
+  </dk-app-attribute-form2>
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4 dk-form-label"
+                          [attributeControl]="getAttrCtrlFromID('CREATE_TIME')"
+                          [formGroup]="adminForm"
+                          [isSmallSize] = "true"
+                          [readonly]="true">
+  </dk-app-attribute-form2>
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4 dk-form-label"
+                          [attributeControl]="getAttrCtrlFromID('CHANGED_BY')"
+                          [formGroup]="adminForm"
+                          [isSmallSize] = "true"
+                          [readonly]="true">
+  </dk-app-attribute-form2>
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4 dk-form-label"
+                          [attributeControl]="getAttrCtrlFromID('CHANGE_TIME')"
+                          [formGroup]="adminForm"
+                          [isSmallSize] = "true"
+                          [readonly]="true">
+  </dk-app-attribute-form2>
+</form>

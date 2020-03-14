@@ -1,0 +1,87 @@
+<div class="card mb-3 pt-3">
+  <div class="mt-2 pl-4 row">
+    <div class="col-6 form-group row">
+      <label for="app_id" class="col-sm-3 col-form-label">App ID:</label>
+      <input id="app_id" name="app_id" [(ngModel)]="appID" type="text"
+             class="col-sm-6 form-control form-control-sm" (keyup)="enterSearch($event)" autofocus>
+    </div>
+    <div class="col-6 form-group row">
+      <label for="app_name" class="col-sm-3 col-form-label">App Name:</label>
+      <input id="app_name" name="app_name" [(ngModel)]="appName" type="text"
+             class="col-sm-6 form-control form-control-sm" (keyup)="enterSearch($event)">
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <button type="button" id="search" class="btn btn-primary btn-sm float-right mr-4" (click)="search()">Search</button>
+  </div>
+</div>
+
+<div class="mt-2 mb-4 mx-4">
+  <dk-message></dk-message>
+  <div class="btn-toolbar justify-content-end my-2" role="toolbar">
+    <button type="button" id="new" class="btn btn-light btn-sm" (click)="new()">
+      <span class="fas fa-plus"></span> New</button>
+  </div>
+  <table class="table table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Link</th>
+      <th scope="col">External?</th>
+<!--      <th scope="col">Created By</th>-->
+<!--      <th scope="col">Created At</th>-->
+      <th scope="col">Changed By</th>
+      <th scope="col">Changed At</th>
+      <th scope="col">Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let app of apps">
+      <td><a [routerLink]="['/apps', app.APP_ID, {action: 'display'}]">{{app.APP_ID}}</a></td>
+      <td>{{app.NAME}}</td>
+      <td>{{app.ROUTE_LINK}}</td>
+      <td> <input type="checkbox" [(ngModel)]="app.IS_EXTERNAL" disabled></td>
+<!--      <td>{{app.CREATED_BY}}</td>-->
+<!--      <td>{{app.CREATE_TIME}}</td>-->
+      <td>{{app.CHANGED_BY}}</td>
+      <td>{{app.CHANGE_TIME}}</td>
+      <td class="dk-actions">
+        <button title="Display" id="display" class="btn btn-sm" type="button" (click)="display(app.APP_ID)">
+          <span class="fas fa-search"></span>
+        </button>
+        <button title="Change" id="change" class="btn btn-sm" type="button" (click)="change(app.APP_ID)">
+          <span class="fas fa-pen"></span>
+        </button>
+        <button title="Delete" id="delete" class="btn btn-sm" type="button" (click)="delete(app.APP_ID)">
+          <span class="far fa-trash-alt"></span>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="modal fade" [class.show]="showDeletionConfirmation"
+       [ngStyle]="{'display': displayDeletionConfirmation}" id="deletionConfirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeletion">Confirm Deletion</h5>
+          <button type="button" class="close" (click)="cancelDeletion()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure to delete the user '{{toBeDeletedInstance}}'?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="cancel" class="btn btn-secondary" (click)="cancelDeletion()">Cancel</button>
+          <button type="button" id="confirm" class="btn btn-primary" (click)="confirmDeletion()">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

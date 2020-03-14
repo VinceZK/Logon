@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   redirectPath: '',
-  redirectUrl: '/portal/external-app/Modeling',
-  host: 'http://localhost:3000'
+  redirectUrl: '/landing',
+  originalHost: 'http://localhost:3000'
 };
 
 /*

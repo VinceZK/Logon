@@ -54,7 +54,7 @@ module.exports = {
 
   session:function(req,res){
     if(req.user){
-      res.json(req.user);
+      res.json(req.user.identity.userBasic);
     } else {
       res.status(200).end();
     }

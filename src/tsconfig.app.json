@@ -8,6 +8,9 @@
     "main.ts",
     "polyfills.ts"
   ],
+  "angularCompilerOptions": {
+    "enableIvy": true
+  },
   "include": [
     "src/**/*.d.ts"
   ]
