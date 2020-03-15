@@ -16,6 +16,9 @@
 .dk-auth-object {
   width: 20rem;
 }
+.dk-auth-status {
+  width: 3rem;
+}
 .dk-auth-value {
   width: 100%;
 }

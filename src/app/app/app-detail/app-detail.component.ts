@@ -215,11 +215,16 @@ export class AppDetailComponent implements OnInit {
 
     function __parseAppAuthObject( relationship: Relationship): void {
       relationship.values.forEach( value => {
-        const authorization = <Authorization>JSON.parse(value['DEFAULT_AUTH_VALUE']);
+        const authorization = value['DEFAULT_AUTH_VALUE'] ?
+          <Authorization>JSON.parse(value['DEFAULT_AUTH_VALUE']) : null;
+        const status = authorization ?
+          Object.values(authorization.AuthFieldValue).findIndex( authValue => !authValue ) !== -1 ?
+            'yellow' : 'green' : 'red';
         parsedRelationship.appAuthObjects.push({
           CHECKED: '',
           COLLAPSED: false,
           NODE_ID: value['RELATIONSHIP_INSTANCE_GUID'],
+          STATUS: status,
           RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
           auth_object_INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
           DEFAULT_AUTH_VALUE: value['DEFAULT_AUTH_VALUE'],
@@ -237,9 +242,12 @@ export class AppDetailComponent implements OnInit {
             CHECKED: '',
             COLLAPSED: false,
             NODE_ID: value['RELATIONSHIP_INSTANCE_GUID'],
+            STATUS: authorization.AuthFieldValue[authFieldName] ?
+              authorization.AuthFieldValue[authFieldName].length > 0 ? 'green' : 'red' : 'red',
             RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
             auth_object_INSTANCE_GUID: '',
-            DEFAULT_AUTH_VALUE: authorization && JSON.stringify(authorization.AuthFieldValue[authFieldName], null, ' '),
+            DEFAULT_AUTH_VALUE: authorization && authorization.AuthFieldValue[authFieldName]
+              && JSON.stringify(authorization.AuthFieldValue[authFieldName], null, ' '),
             OBJ_NAME: value['PARTNER_INSTANCES'][0]['authObject'][0]['OBJ_NAME'],
             DESC: '',
             ROW_TYPE: 'FIELD',
@@ -283,28 +291,27 @@ export class AppDetailComponent implements OnInit {
   save() {
     this.messageService.clearMessages();
     if (this._composeChanges()) {
-      console.log(this.changedValue);
-      // this.identityService.save(<Entity>this.changedValue).subscribe( data => {
-      //   this.changedValue = {};
-      //   if ('INSTANCE_GUID' in data) {
-      //     const appID = data['app'][0]['APP_ID'];
-      //     this.instanceGUID = data['INSTANCE_GUID'];
-      //     this.isNewMode = false;
-      //     this.identityService.getAppDetail(appID).subscribe(instance => {
-      //       if ('ENTITY_ID' in instance) {
-      //         this._switch2DisplayMode();
-      //         this._resetValue(<Entity>instance);
-      //       } else {
-      //         const errorMessages = <Message[]>instance;
-      //         errorMessages.forEach( msg => this.messageService.add(msg));
-      //       }
-      //     });
-      //     this.messageService.reportMessage('APP', 'SAVED', 'S', appID);
-      //   } else {
-      //     const errorMessages = <Message[]>data;
-      //     errorMessages.forEach( msg => this.messageService.add(msg));
-      //   }
-      // });
+      this.identityService.save(<Entity>this.changedValue).subscribe( data => {
+        this.changedValue = {};
+        if ('INSTANCE_GUID' in data) {
+          const appID = data['app'][0]['APP_ID'];
+          this.instanceGUID = data['INSTANCE_GUID'];
+          this.isNewMode = false;
+          this.identityService.getAppDetail(appID).subscribe(instance => {
+            if ('ENTITY_ID' in instance) {
+              this._switch2DisplayMode();
+              this._resetValue(<Entity>instance);
+            } else {
+              const errorMessages = <Message[]>instance;
+              errorMessages.forEach( msg => this.messageService.add(msg));
+            }
+          });
+          this.messageService.reportMessage('APP', 'SAVED', 'S', appID);
+        } else {
+          const errorMessages = <Message[]>data;
+          errorMessages.forEach( msg => this.messageService.add(msg));
+        }
+      });
     }
   }
 
@@ -359,27 +366,29 @@ export class AppDetailComponent implements OnInit {
       const rowType = control.get('ROW_TYPE').value;
       if (rowType === 'OBJECT') {
         if (currentAuthObjectCtrl && isAuthorizationChanged) {
-          currentAuthObjectCtrl.get('DEFAULT_VALUE').setValue(JSON.stringify(authorization, null, ' '));
-          currentAuthObjectCtrl.get('DEFAULT_VALUE').markAsDirty();
+          currentAuthObjectCtrl.get('DEFAULT_AUTH_VALUE').setValue(JSON.stringify(authorization, null, ' '));
+          currentAuthObjectCtrl.get('DEFAULT_AUTH_VALUE').markAsDirty();
         }
         currentAuthObjectCtrl = control;
         authorization = new Authorization();
         authorization.AuthObject = control.get('OBJ_NAME').value;
+        authorization.AuthFieldValue = {};
+        isAuthorizationChanged = false;
       } else { // Field
         if (control.dirty) {
           isAuthorizationChanged = true;
           control.markAsPristine();
         }
-        authorization.AuthFieldValue[control.get('FIELD_NAME').value]
-          = JSON.parse(control.get('DEFAULT_VALUE').value);
+        authorization.AuthFieldValue[control.get('FIELD_NAME').value] =
+          control.get('DEFAULT_AUTH_VALUE').value ? JSON.parse(control.get('DEFAULT_AUTH_VALUE').value) : null;
       }
     });
     if (currentAuthObjectCtrl && isAuthorizationChanged) {
-      currentAuthObjectCtrl.get('DEFAULT_VALUE').setValue(JSON.stringify(authorization, null, ' '));
-      currentAuthObjectCtrl.get('DEFAULT_VALUE').markAsDirty();
+      currentAuthObjectCtrl.get('DEFAULT_AUTH_VALUE').setValue(JSON.stringify(authorization, null, ' '));
+      currentAuthObjectCtrl.get('DEFAULT_AUTH_VALUE').markAsDirty();
     }
     const originalAuthObjValue = [];
-    if ( !this.originalValue['appAuthObjects'] ) {
+    if ( this.originalValue['appAuthObjects'] ) {
       this.originalValue['appAuthObjects'].forEach( authObj => {
         if (authObj.ROW_TYPE === 'OBJECT') { originalAuthObjValue.push( authObj ); }
       });
@@ -387,9 +396,10 @@ export class AppDetailComponent implements OnInit {
     relationship = this.uiMapperService.composeChangedRelationship(
       'rs_app_auth',
       [{ENTITY_ID: 'authObject', ROLE_ID: 'auth_object'}],
-      appCategoryFormArray,
+      appAuthObjFormArray,
       originalAuthObjValue,
       ['CHECKED', 'COLLAPSED', 'NODE_ID', 'OBJ_NAME', 'DESC', 'ROW_TYPE', 'FIELD_NAME', 'DATA_ELEMENT']);
+
     if (relationship) {
       if (this.changedValue['relationships']) {
         this.changedValue['relationships'].push(relationship);

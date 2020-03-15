@@ -37,11 +37,6 @@ export class AppAuthorizationComponent implements OnInit {
 
   ngOnInit() {
     this.appAuthObjFormArray = this.mainForm.get('appAuthObjects') as FormArray;
-    this.appAuthObjFormArray.controls.forEach( appAuthObjCtrl => {
-      if ( appAuthObjCtrl.get('ROW_TYPE').value === 'FIELD' ) {
-        appAuthObjCtrl.get('CHECKED').disable();
-      }
-    });
   }
 
   checkAll(): void {
@@ -53,7 +48,7 @@ export class AppAuthorizationComponent implements OnInit {
     const currentAuthObjCtrl = this.appAuthObjFormArray.at(idx);
     this.appAuthObjFormArray.controls.forEach( (authObjCtrl, index) => {
       if (index <= idx) { return; }
-      if (authObjCtrl.get('OBJ_NAME').value === currentAuthObjCtrl.get('OBJ_NAME').value) {
+      if (authObjCtrl.get('NODE_ID').value === currentAuthObjCtrl.get('NODE_ID').value) {
         authObjCtrl.get('CHECKED').setValue(!currentAuthObjCtrl.get('CHECKED').value);
       }
     });
@@ -64,6 +59,7 @@ export class AppAuthorizationComponent implements OnInit {
       CHECKED: '',
       COLLAPSED: false,
       NODE_ID: ++this.nodeID,
+      STATUS: 'red',
       RELATIONSHIP_INSTANCE_GUID: '',
       auth_object_INSTANCE_GUID: '',
       DEFAULT_AUTH_VALUE: '',
@@ -104,6 +100,7 @@ export class AppAuthorizationComponent implements OnInit {
               CHECKED: [{value: '', disabled: true}],
               COLLAPSED: false,
               NODE_ID: this.nodeID,
+              STATUS: 'red',
               RELATIONSHIP_INSTANCE_GUID: '',
               auth_object_INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
               DEFAULT_AUTH_VALUE: '',
@@ -161,7 +158,48 @@ export class AppAuthorizationComponent implements OnInit {
 
   addAuthValue(): void {
     this.authValueComponent.generateAuthValue();
+    this._coordinateStatus(this.currentAuthFieldValueForm);
     this.isAuthValueModalShown = false;
   }
 
+  setFullPermission(idx: number): void {
+    const currentAuthObjForm = this.appAuthObjFormArray.at(idx);
+    if (currentAuthObjForm.get('STATUS').value === 'green') { return; }
+
+    if (currentAuthObjForm.get('ROW_TYPE').value === 'OBJECT') {
+      currentAuthObjForm.get('STATUS').setValue('green');
+      this.appAuthObjFormArray.controls.forEach( appAuthObjForm => {
+        if (appAuthObjForm.get('NODE_ID').value === currentAuthObjForm.get('NODE_ID').value &&
+            appAuthObjForm.get('ROW_TYPE').value === 'FIELD') {
+          appAuthObjForm.get('DEFAULT_AUTH_VALUE').setValue('"*"');
+          appAuthObjForm.get('DEFAULT_AUTH_VALUE').markAsDirty();
+          appAuthObjForm.get('STATUS').setValue('green');
+        }
+      });
+    } else { // Field
+      currentAuthObjForm.get('DEFAULT_AUTH_VALUE').setValue('"*"');
+      currentAuthObjForm.get('DEFAULT_AUTH_VALUE').markAsDirty();
+      currentAuthObjForm.get('STATUS').setValue('green');
+      this._coordinateStatus(currentAuthObjForm);
+    }
+  }
+
+  _coordinateStatus(appAuthObjForm: AbstractControl): void {
+    const parentAuthObjectCtrl = this.appAuthObjFormArray.controls.find( ctrl =>
+      ctrl.get('ROW_TYPE').value === 'OBJECT' &&
+      ctrl.get('NODE_ID').value === appAuthObjForm.get('NODE_ID').value);
+    if (this.appAuthObjFormArray.controls.findIndex( ctrl => ctrl.get('ROW_TYPE').value === 'FIELD' &&
+      ctrl.get('NODE_ID').value === appAuthObjForm.get('NODE_ID').value &&
+      ctrl.get('STATUS').value === 'red') === -1) {
+      parentAuthObjectCtrl.get('STATUS').setValue('green');
+    } else {
+      if (this.appAuthObjFormArray.controls.findIndex( ctrl => ctrl.get('ROW_TYPE').value === 'FIELD' &&
+        ctrl.get('NODE_ID').value === appAuthObjForm.get('NODE_ID').value &&
+        ctrl.get('STATUS').value === 'green') === -1) {
+        parentAuthObjectCtrl.get('STATUS').setValue('red');
+      } else {
+        parentAuthObjectCtrl.get('STATUS').setValue('yellow');
+      }
+    }
+  }
 }

@@ -17,6 +17,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
   selectOptionArray: FormArray;
   attrCtrl: AttributeBase;
   highAttrCtrl: AttributeBase;
+  fullPermission: boolean;
 
   constructor(private fb: FormBuilder,
               private entityService: EntityService,
@@ -29,7 +30,9 @@ export class AuthValueComponent implements OnInit, OnChanges {
     if (!this.authFieldValueForm) { return; }
     if (this.singleValueArray) { this.singleValueArray.clear(); }
     if (this.selectOptionArray) { this.selectOptionArray.clear(); }
+    this.fullPermission = false;
     this.attrCtrl = null;
+    this.tabStrip = 1;
     const authValues = this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').value;
     this.entityService.getElementMeta(this.authFieldValueForm.get('DATA_ELEMENT').value)
       .subscribe( attrCtrl => {
@@ -44,7 +47,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
       } );
 
     this.fieldName = this.authFieldValueForm.get('FIELD_NAME').value;
-    if (!authValues) {
+    if (!authValues || !JSON.parse(authValues)) {
         this.singleValueArray = this.fb.array([this.fb.group({Low: ''})]);
         this.selectOptionArray = this.fb.array([this.fb.group({
           Operator: [{value: Operator.Between, disabled: this.readonly}],
@@ -52,10 +55,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
     } else {
       const authValueArray = JSON.parse(authValues);
       if (authValueArray === '*') {
-        this.singleValueArray = this.fb.array([this.fb.group({Low: '*'})]);
-        this.selectOptionArray = this.fb.array([this.fb.group({
-          Operator: [{value: Operator.Between, disabled: this.readonly}],
-          Option: [{value: Option.Include, disabled: this.readonly}], Low: '', High: ''})]);
+        this._setFullPermission(true);
       } else {
         const singleValues = [];
         const selectOptions = [];
@@ -71,12 +71,22 @@ export class AuthValueComponent implements OnInit, OnChanges {
             }));
           }
         });
-        this.singleValueArray = singleValues.length > 0 ? this.fb.array(singleValues) :
-          this.fb.array([this.fb.group({Low: ''})]);
-        this.selectOptionArray = selectOptions.length > 0 ?  this.fb.array(selectOptions) :
-          this.fb.array([this.fb.group({
+        if (singleValues.length > 0 ) {
+          this.singleValueArray = this.fb.array(singleValues);
+          this.tabStrip = 1;
+        } else {
+          this.singleValueArray = this.fb.array([this.fb.group({Low: ''})]);
+          this.tabStrip = 2;
+        }
+
+        if (selectOptions.length > 0) {
+          this.selectOptionArray = this.fb.array(selectOptions)
+        } else {
+          this.selectOptionArray = this.fb.array([this.fb.group({
             Operator: [{value: Operator.Between, disabled: this.readonly}],
             Option: [{value: Option.Include, disabled: this.readonly}], Low: '', High: ''})]);
+          this.tabStrip = 1;
+        }
       }
     }
   }
@@ -109,7 +119,32 @@ export class AuthValueComponent implements OnInit, OnChanges {
         }
       });
     }
-    this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue(JSON.stringify(authValues, null, ' '));
+    if (authValues.length === 0) {
+      this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue('');
+      this.authFieldValueForm.get('STATUS').setValue('red');
+    } else {
+      this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue(JSON.stringify(authValues, null, ' '));
+      this.authFieldValueForm.get('STATUS').setValue('green');
+    }
     this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').markAsDirty();
+  }
+
+  checkFullPermission(): void {
+    this._setFullPermission(!this.fullPermission);
+  }
+
+  _setFullPermission(isFull: boolean): void {
+    this.fullPermission = isFull;
+    this.authFieldValueForm.get('STATUS').setValue(isFull ? 'green' : 'red');
+    this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue(isFull ? '"*"' : '');
+    if (isFull) {
+      this.singleValueArray = this.fb.array([]);
+      this.selectOptionArray = this.fb.array([]);
+    } else {
+      this.singleValueArray = this.fb.array([this.fb.group({Low: ''})]);
+      this.selectOptionArray = this.fb.array([this.fb.group({
+        Operator: Operator.Between, Option: Option.Include,
+        Low: '', High: ''})]);
+    }
   }
 }

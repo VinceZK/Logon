@@ -10,6 +10,7 @@
   <tr>
     <th class="dk-checkbox"><input name="btSelectAll" type="checkbox" (click)="checkAll()"></th>
     <th class="dk-auth-object">Authorization Object / Field</th>
+    <th class="dk-auth-status">Status</th>
     <th class="dk-auth-value">Description / Authorization Value</th>
   </tr>
   </thead>
@@ -31,6 +32,16 @@
       <span class="treegrid-expander"></span>
       {{appAuthObjForm.get('FIELD_NAME').value}}
     </td>
+
+    <td>
+      <button class="btn btn-sm" type="button" id="add" [disabled]="readonly" (click)="setFullPermission(i)" title="Full Permission">
+        <span [ngClass]="{'green-light': appAuthObjForm.get('STATUS').value === 'green',
+                          'yellow-light': appAuthObjForm.get('STATUS').value  === 'yellow',
+                          'red-light': appAuthObjForm.get('STATUS').value  === 'red'}"
+          class="traffic-light"></span>
+      </button>
+    </td>
+
     <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'OBJECT'">{{appAuthObjForm.get('DESC').value}}</td>
     <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'FIELD'">
       <a class="nav-link" href="javascript:void(0);" (click)="openAuthValueModal(i)">
@@ -49,17 +60,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="maintainAuthValueDialogTitle">Maintain Authorization Value</h5>
-        <button type="button" class="close" (click)="closeAuthValueModal()">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
         <dk-message></dk-message>
         <app-auth-value [authFieldValueForm]="currentAuthFieldValueForm" [readonly]="readonly" ></app-auth-value>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-secondary" (click)="closeAuthValueModal()">Cancel</button>
-        <button type="button" class="btn btn-sm btn-primary" (click)="addAuthValue()" [disabled]="readonly">Confirm</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="addAuthValue()">OK</button>
       </div>
     </div>
   </div>

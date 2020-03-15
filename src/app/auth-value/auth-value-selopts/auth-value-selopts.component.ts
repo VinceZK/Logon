@@ -48,7 +48,7 @@ export class AuthValueSeloptsComponent implements OnInit {
       this.selectOptionArray.at(idx).get('High').setValue('');
     } else {
       this.selectOptionArray.removeAt(idx);
-      this.selectOptionArray.markAsDirty();
     }
+    this.selectOptionArray.markAsDirty();
   }
 }

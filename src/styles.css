@@ -51,3 +51,22 @@ select.ng-invalid{
   display: inline-block;
   position: relative;
 }
+.traffic-light {
+  width: 16px;
+  height: 16px;
+  display: table;
+  position: relative;
+  cursor: pointer;
+}
+.red-light {
+  background-image: url(assets/img/red_icon.png);
+  background-size: 16px 16px;
+}
+.yellow-light {
+  background-image: url(assets/img/yellow_icon.png);
+  background-size: 16px 16px;
+}
+.green-light {
+  background-image: url(assets/img/green_icon.png);
+  background-size: 16px 16px;
+}

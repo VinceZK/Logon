@@ -1,3 +1,15 @@
+<div class="btn-toolbar" role="toolbar">
+  <div class="custom-control custom-checkbox">
+    <input type="checkbox" class="custom-control-input" id="fullPermission"
+           [(ngModel)]="fullPermission" [disabled]="readonly" (click)="checkFullPermission()">
+    <label class="custom-control-label" for="fullPermission">Enable Full Permission</label>
+  </div>
+  <span *ngIf="authFieldValueForm"
+        [ngClass]="{'green-light': authFieldValueForm.get('STATUS').value === 'green',
+                       'red-light': authFieldValueForm.get('STATUS').value  === 'red'}"
+        class="ml-4 mt-1 traffic-light"></span>
+</div>
+
 <ul class="nav nav-tabs mt-1">
   <li class="nav-item">
     <a class="nav-link" [class.active]="tabStrip===1" href="javascript:void(0);"

@@ -27,7 +27,7 @@ export class AuthValueSinglesComponent implements OnInit {
       this.singleValueArray.at(idx).get('Low').setValue('');
     } else {
       this.singleValueArray.removeAt(idx);
-      this.singleValueArray.markAsDirty();
     }
+    this.singleValueArray.markAsDirty();
   }
 }
