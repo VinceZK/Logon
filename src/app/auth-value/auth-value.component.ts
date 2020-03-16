@@ -95,30 +95,30 @@ export class AuthValueComponent implements OnInit, OnChanges {
     this.tabStrip = tabStripID;
   }
 
-  generateAuthValue(): void {
-    if (!this.singleValueArray.dirty && !this.selectOptionArray.dirty) { return; }
+  generateAuthValue(): boolean {
+    if (!this.singleValueArray.dirty && !this.selectOptionArray.dirty) { return true; }
     const authValues = [];
-    if (this.singleValueArray.dirty) {
-      this.singleValueArray.controls.forEach( singleValueCtrl => {
-        const singleValue = singleValueCtrl.get('Low').value;
-        if (singleValue && authValues.findIndex( value => value === singleValue) === -1) {
-          authValues.push(singleValue);
+    let hasErrors = false;
+    this.singleValueArray.controls.forEach( singleValueCtrl => {
+      const singleValue = singleValueCtrl.get('Low').value;
+      if (singleValue && authValues.findIndex( value => value === singleValue) === -1) {
+        authValues.push(singleValue);
+      }
+    });
+    this.selectOptionArray.controls.forEach( selectOptionCtrl => {
+      const selectOption = <SelectOption>selectOptionCtrl.value;
+      if (selectOption.Low) {
+        if (selectOption.Operator === Operator.Between &&
+          selectOption.Low >= selectOption.High) {
+          selectOptionCtrl.get('Low').setErrors({message: 'Low value is larger or equal to high value'});
+          hasErrors = true;
+        } else {
+          authValues.push(selectOption);
         }
-      });
-    }
-    if (this.selectOptionArray.dirty) {
-      this.selectOptionArray.controls.forEach( selectOptionCtrl => {
-        const selectOption = <SelectOption>selectOptionCtrl.value;
-        if (selectOption.Low) {
-          if (selectOption.Operator === Operator.Between &&
-            selectOption.Low >= selectOption.High) {
-            selectOptionCtrl.get('Low').setErrors({message: 'Low value is larger or equal to high value'});
-          } else {
-            authValues.push(selectOption);
-          }
-        }
-      });
-    }
+      }
+    });
+    if (hasErrors) { return false; }
+
     if (authValues.length === 0) {
       this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue('');
       this.authFieldValueForm.get('STATUS').setValue('red');
@@ -127,6 +127,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
       this.authFieldValueForm.get('STATUS').setValue('green');
     }
     this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').markAsDirty();
+    return true;
   }
 
   checkFullPermission(): void {

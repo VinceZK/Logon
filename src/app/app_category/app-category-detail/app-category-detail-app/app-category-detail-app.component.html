@@ -1,0 +1,43 @@
+<table class="table table-bordered table-sm dk-table ml-3 mt-4" [formGroup]="mainForm">
+  <thead class="thead-light">
+  <tr>
+    <th class="dk-name">App ID</th>
+    <th class="dk-description">App Name</th>
+    <th class="dk-number">Order</th>
+    <th class="dk-actions">Action</th>
+  </tr>
+  </thead>
+
+  <tbody formArrayName="apps" class="mb-4">
+  <tr *ngFor="let appForm of appFormArray.controls; let i = index">
+    <td [formGroup]="appForm">
+      <div class="input-group">
+        <input class="form-control form-control-sm" type="text" formControlName="APP_ID"
+               [readonly]="readonly || isExisting(appForm) && appForm.valid" (change)="onChangeKey(i)">
+        <div class="invalid-tooltip">
+          {{appForm.get('APP_ID').errors?.message}}
+        </div>
+        <div class="input-group-append">
+          <button class="btn btn-sm btn-outline-secondary btn-light" type="button" id="searchApp"
+                  (click)="onSearchHelp(i, appForm)">
+            <span class="fas fa-search"></span>
+          </button>
+        </div>
+      </div>
+    </td>
+    <td [formGroup]="appForm">
+      <input type="text" formControlName="NAME" readonly class="form-control form-control-sm">
+    </td>
+    <td [formGroup]="appForm" >
+      <input type="number" formControlName="ORDER" [readonly]="readonly" class="form-control form-control-sm">
+    </td>
+    <td>
+      <button class="btn btn-sm" type="button" id="delete" [disabled]="readonly" (click)="delete(i)" title="Delete">
+        <span class="far fa-trash-alt"></span>
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<dk-app-search-help></dk-app-search-help>

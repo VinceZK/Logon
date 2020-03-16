@@ -63,7 +63,7 @@ export class AppAuthorizationComponent implements OnInit {
       RELATIONSHIP_INSTANCE_GUID: '',
       auth_object_INSTANCE_GUID: '',
       DEFAULT_AUTH_VALUE: '',
-      OBJ_NAME: 'BLOG',
+      OBJ_NAME: '',
       DESC: '',
       ROW_TYPE: 'OBJECT',
       FIELD_NAME: '',
@@ -152,14 +152,11 @@ export class AppAuthorizationComponent implements OnInit {
     this.currentAuthFieldValueForm = <FormGroup>this.appAuthObjFormArray.at(idx);
   }
 
-  closeAuthValueModal(): void {
-    this.isAuthValueModalShown = false;
-  }
-
   addAuthValue(): void {
-    this.authValueComponent.generateAuthValue();
-    this._coordinateStatus(this.currentAuthFieldValueForm);
-    this.isAuthValueModalShown = false;
+    if ( this.authValueComponent.generateAuthValue() ) {
+      this._coordinateStatus(this.currentAuthFieldValueForm);
+      this.isAuthValueModalShown = false;
+    }
   }
 
   setFullPermission(idx: number): void {

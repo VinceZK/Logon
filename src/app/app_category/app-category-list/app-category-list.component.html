@@ -1,0 +1,81 @@
+<div class="card mb-3 pt-3">
+  <div class="mt-2 pl-4 row">
+    <div class="col-6 form-group row">
+      <label for="app_category_id" class="col-sm-3 col-form-label">Category ID:</label>
+      <input id="app_category_id" name="app_category_id" [(ngModel)]="appCategoryID" type="text"
+             class="col-sm-6 form-control form-control-sm" (keyup)="enterSearch($event)" autofocus>
+    </div>
+    <div class="col-6 form-group row">
+      <label for="app_category_name" class="col-sm-3 col-form-label">Category Name:</label>
+      <input id="app_category_name" name="app_category_name" [(ngModel)]="appCategoryName" type="text"
+             class="col-sm-6 form-control form-control-sm" (keyup)="enterSearch($event)">
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <button type="button" id="search" class="btn btn-primary btn-sm float-right mr-4" (click)="search()">Search</button>
+  </div>
+</div>
+
+<div class="mt-2 mb-4 mx-4">
+  <dk-message></dk-message>
+  <div class="btn-toolbar justify-content-end my-2" role="toolbar">
+    <button type="button" id="new" class="btn btn-light btn-sm" (click)="new()">
+      <span class="fas fa-plus"></span> New</button>
+  </div>
+  <table class="table table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Icon</th>
+      <th scope="col">Changed By</th>
+      <th scope="col">Changed At</th>
+      <th scope="col">Action</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let appCategory of appCategories">
+      <td><a [routerLink]="['/app-categories', appCategory.ID, {action: 'display'}]">{{appCategory.ID}}</a></td>
+      <td>{{appCategory.NAME}}</td>
+      <td><span [ngClass]="appCategory.ICON"></span></td>
+      <td>{{appCategory.CHANGED_BY}}</td>
+      <td>{{appCategory.CHANGE_TIME}}</td>
+      <td class="dk-actions">
+        <button title="Display" id="display" class="btn btn-sm" type="button" (click)="display(appCategory.ID)">
+          <span class="fas fa-search"></span>
+        </button>
+        <button title="Change" id="change" class="btn btn-sm" type="button" (click)="change(appCategory.ID)">
+          <span class="fas fa-pen"></span>
+        </button>
+        <button title="Delete" id="delete" class="btn btn-sm" type="button" (click)="delete(appCategory.ID)">
+          <span class="far fa-trash-alt"></span>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="modal fade" [class.show]="showDeletionConfirmation"
+       [ngStyle]="{'display': displayDeletionConfirmation}" id="deletionConfirmation" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeletion">Confirm Deletion</h5>
+          <button type="button" class="close" (click)="cancelDeletion()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure to delete the user '{{toBeDeletedInstance}}'?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="cancel" class="btn btn-secondary" (click)="cancelDeletion()">Cancel</button>
+          <button type="button" id="confirm" class="btn btn-primary" (click)="confirmDeletion()">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

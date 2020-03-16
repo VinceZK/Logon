@@ -1,10 +1,10 @@
 <table class="table table-bordered table-sm dk-table ml-3 mt-4" [formGroup]="mainForm">
   <thead class="thead-light">
   <tr>
-    <th scope="col">Category</th>
-    <th scope="col">Name</th>
-    <th scope="col">ICON</th>
-    <th scope="col">Action</th>
+    <th class="dk-name">Category</th>
+    <th class="dk-description">Name</th>
+    <th class="dk-icon">ICON</th>
+    <th class="dk-number">Order</th>
   </tr>
   </thead>
 
@@ -12,11 +12,7 @@
   <tr *ngFor="let appCategoryForm of appCategoryFormArray.controls; let i = index" >
     <td [formGroup]="appCategoryForm">
       <div class="input-group dk-name">
-        <input class="form-control form-control-sm" type="text" formControlName="ID"
-               [readonly]="readonly || isExisting(appCategoryForm) && appCategoryForm.valid" (change)="onChangeKey(i)">
-        <div class="invalid-tooltip">
-          {{appCategoryForm.get('ID').errors?.message}}
-        </div>
+        <input class="form-control form-control-sm" type="text" formControlName="ID" readonly>
         <div class="input-group-append">
           <button class="btn btn-sm btn-outline-secondary btn-light" type="button" id="searchPermission"
                   (click)="onSearchHelp(i, appCategoryForm)">
@@ -31,10 +27,8 @@
     <td>
       <span [ngClass]="appCategoryForm.get('ICON').value"></span>
     </td>
-    <td class="dk-actions">
-      <button class="btn btn-sm" type="button" id="delete" [disabled]="readonly" (click)="delete(i)" title="Delete">
-        <span class="far fa-trash-alt"></span>
-      </button>
+    <td [formGroup]="appCategoryForm" class="dk-number">
+      <input type="number" formControlName="ORDER" readonly class="form-control form-control-sm">
     </td>
   </tr>
   </tbody>

@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 import {environment} from '../environments/environment';
 import {Message, MessageService, messageType} from 'ui-message-angular';
 import {msgStore} from './msgStore';
-import {AppList, AuthObjList, PermissionList, Session} from './permssion';
+import {AppCategoryList, AppList, AuthObjList, PermissionList, Session} from './permssion';
 import {formatDate} from '@angular/common';
 
 const httpOptions = {
@@ -267,6 +267,69 @@ export class IdentityService {
           } : instance[0];
       }),
       catchError(this.handleError<any>('getAuthObjectByName')));
+  }
+
+  searchAppCategories(appCategoryID: string, appCategoryName: string): Observable<AppCategoryList[] | Message[]> {
+    const queryObject = new QueryObject();
+    queryObject.ENTITY_ID = 'category';
+    queryObject.RELATION_ID = 'r_app_category';
+    queryObject.PROJECTION = [ 'ID', 'NAME', 'ICON',
+      {FIELD_NAME: 'CREATED_BY', RELATION_ID: 'category'},
+      {FIELD_NAME: 'CREATE_TIME', RELATION_ID: 'category'},
+      {FIELD_NAME: 'CHANGED_BY', RELATION_ID: 'category'},
+      {FIELD_NAME: 'CHANGE_TIME', RELATION_ID: 'category'} ];
+    queryObject.FILTER = [];
+    if (appCategoryID) {
+      if (appCategoryID.includes('*') || appCategoryID.includes('%')) {
+        queryObject.FILTER.push({FIELD_NAME: 'ID', OPERATOR: 'CN', LOW: appCategoryID});
+      } else {
+        queryObject.FILTER.push({FIELD_NAME: 'ID', OPERATOR: 'EQ', LOW: appCategoryID});
+      }
+    }
+    if (appCategoryName) {
+      if (appCategoryName.includes('*')) {
+        appCategoryName = appCategoryName.replace(/\*/gi, '%');
+        queryObject.FILTER.push({FIELD_NAME: 'NAME', OPERATOR: 'CN', LOW: appCategoryName});
+      } else {
+        queryObject.FILTER.push({FIELD_NAME: 'NAME', OPERATOR: 'EQ', LOW: appCategoryName});
+      }
+    }
+    queryObject.FILTER.push({RELATION_ID: 'category', FIELD_NAME: 'TYPE', OPERATOR: 'EQ', LOW: 'APP'});
+    queryObject.SORT = ['ID'];
+    return this.http.post<any>(this.originalHost + `/api/query`, queryObject, httpOptions).pipe(
+      catchError(this.handleError<any>('searchAppCategories')));
+  }
+
+  getAppCategoryDetail(appCategoryID: string): Observable<Entity | Message[]> {
+    const pieceObject = {
+      ID: { RELATION_ID: 'r_app_category', ID: appCategoryID},
+      piece: {
+        RELATIONS: ['category', 'r_app_category'],
+        RELATIONSHIPS: [
+          {
+            RELATIONSHIP_ID: 'rs_app_category',
+            PARTNER_ENTITY_PIECES: { RELATIONS: ['app'] }
+          },
+          {
+            RELATIONSHIP_ID: 'rs_system_role_category',
+            PARTNER_ENTITY_PIECES: { RELATIONS: ['r_role'] }
+          },
+        ]
+      }
+    };
+    return this.http.post<Entity | Message[]>(
+      this.originalHost + `/api/entity/instance/piece`, pieceObject, httpOptions).pipe(
+      catchError(this.handleError<any>('getAppCategoryDetail')));
+  }
+
+  getAppCategoryByID(appCategoryID: string): Observable<Entity | Message[]> {
+    const pieceObject = {
+      ID: { RELATION_ID: 'r_app_category', ID: appCategoryID},
+      piece: {RELATIONS: ['r_app_category']}
+    };
+    return this.http.post<Entity | Message[]>(
+      this.originalHost + `/api/entity/instance/piece`, pieceObject, httpOptions).pipe(
+      catchError(this.handleError<any>('getAppCategoryByID')));
   }
 
   save(entity: Entity): Observable<Entity | Message[]> {

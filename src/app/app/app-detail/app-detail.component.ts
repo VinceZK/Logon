@@ -25,7 +25,7 @@ export class AppDetailComponent implements OnInit {
   instanceGUID: string;
   originalValue = {};
   changedValue = {};
-  tabStrip = 3;
+  tabStrip = 1;
 
   constructor(private fb: FormBuilder,
               private route: ActivatedRoute,
@@ -132,15 +132,6 @@ export class AppDetailComponent implements OnInit {
       appIDCtrl.setAsyncValidators(
         existingAppValidator(this.identityService, this.messageService));
     }
-
-    const appCategoryArray = this.mainForm.get('appCategories') as FormArray;
-    appCategoryArray.push( this.fb.group({
-      ID: [''],
-      NAME: [''],
-      ICON: [''],
-      app_category_INSTANCE_GUID: [''],
-      RELATIONSHIP_INSTANCE_GUID: ['']
-    }));
 
     // Replace the URL from to display
     if (this.action === 'display') {this.action = 'change'; }
@@ -349,15 +340,6 @@ export class AppDetailComponent implements OnInit {
       this.changedValue['app']['IS_EXTERNAL'] = this.mainForm.get('target.IS_EXTERNAL').value;
     }
 
-    const appCategoryFormArray = this.mainForm.get('appCategories') as FormArray;
-    let relationship = this.uiMapperService.composeChangedRelationship(
-      'rs_app_category',
-      [{ENTITY_ID: 'category', ROLE_ID: 'app_category'}],
-      appCategoryFormArray,
-      this.originalValue['appCategories'],
-      ['ID', 'NAME', 'ICON']);
-    if (relationship) {this.changedValue['relationships'] = [relationship]; }
-
     const appAuthObjFormArray = this.mainForm.get('appAuthObjects') as FormArray;
     let authorization;
     let currentAuthObjectCtrl: AbstractControl;
@@ -393,20 +375,14 @@ export class AppDetailComponent implements OnInit {
         if (authObj.ROW_TYPE === 'OBJECT') { originalAuthObjValue.push( authObj ); }
       });
     }
-    relationship = this.uiMapperService.composeChangedRelationship(
+    const relationship = this.uiMapperService.composeChangedRelationship(
       'rs_app_auth',
       [{ENTITY_ID: 'authObject', ROLE_ID: 'auth_object'}],
       appAuthObjFormArray,
       originalAuthObjValue,
       ['CHECKED', 'COLLAPSED', 'NODE_ID', 'OBJ_NAME', 'DESC', 'ROW_TYPE', 'FIELD_NAME', 'DATA_ELEMENT']);
 
-    if (relationship) {
-      if (this.changedValue['relationships']) {
-        this.changedValue['relationships'].push(relationship);
-      } else {
-        this.changedValue['relationships'] = [relationship];
-      }
-    }
+    if (relationship) { this.changedValue['relationships'] = [relationship]; }
     return true;
   }
 

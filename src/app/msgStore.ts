@@ -118,5 +118,32 @@ export const msgStore = [
         longText: ''
       }
     }
+  },
+  { msgCat: 'APP_CATEGORY',
+    msgName: 'APP_CATEGORY_EXISTS',
+    msgText: {
+      EN: {
+        shortText: 'The application category %s exists.',
+        longText: ''
+      }
+    }
+  },
+  { msgCat: 'APP_CATEGORY',
+    msgName: 'INVALID',
+    msgText: {
+      EN: {
+        shortText: 'The application category contains invalid inputs, please check.',
+        longText: ''
+      }
+    }
+  },
+  { msgCat: 'APP_CATEGORY',
+    msgName: 'SAVED',
+    msgText: {
+      EN: {
+        shortText: 'The application category is saved.',
+        longText: ''
+      }
+    }
   }
 ];

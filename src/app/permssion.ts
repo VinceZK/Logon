@@ -30,6 +30,18 @@ export class AuthObjList {
   INSTANCE_GUID: string;
 }
 
+export class AppCategoryList {
+  ID: string;
+  ICON: string;
+  NAME: string;
+  TYPE: string;
+  CREATED_BY: string;
+  CREATE_TIME: string;
+  CHANGED_BY: string;
+  CHANGE_TIME: string;
+  INSTANCE_GUID: string;
+}
+
 export class Session {
   USER_ID: string;
   USER_NAME?: string;

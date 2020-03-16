@@ -23,6 +23,10 @@ import { AppAuthorizationComponent } from './app/app-detail/app-authorization/ap
 import { AuthValueComponent } from './auth-value/auth-value.component';
 import { AuthValueSinglesComponent } from './auth-value/auth-value-singles/auth-value-singles.component';
 import { AuthValueSeloptsComponent } from './auth-value/auth-value-selopts/auth-value-selopts.component';
+import { AppCategoryListComponent } from './app_category/app-category-list/app-category-list.component';
+import { AppCategoryDetailComponent } from './app_category/app-category-detail/app-category-detail.component';
+import { AppCategoryDetailAppComponent } from './app_category/app-category-detail/app-category-detail-app/app-category-detail-app.component';
+import { AppCategoryDetailRoleComponent } from './app_category/app-category-detail/app-category-detail-role/app-category-detail-role.component';
 
 const appRoutes: Routes = [
   {
@@ -35,11 +39,13 @@ const appRoutes: Routes = [
   { path: 'landing', component: LandingPageComponent },
   { path: 'apps', component: AppListComponent },
   { path: 'apps/:appID', component: AppDetailComponent, canDeactivate: [WorkProtectionGuard]},
+  { path: 'app-categories', component: AppCategoryListComponent },
+  { path: 'app-categories/:appCategory', component: AppCategoryDetailComponent, canDeactivate: [WorkProtectionGuard]},
   { path: 'auth-objects', component: AuthObjectListComponent },
   { path: 'auth-objects/:authObjName', component: AuthObjectDetailComponent, canDeactivate: [WorkProtectionGuard]},
   { path: 'permissions', component: PermissionListComponent },
   { path: 'permissions/:permissionName', component: PermissionDetailComponent, canDeactivate: [WorkProtectionGuard]},
-  { path: '**', redirectTo: 'auth-objects', pathMatch: 'full'}
+  { path: '**', redirectTo: 'app-categories', pathMatch: 'full'}
 ];
 
 @NgModule({
@@ -58,7 +64,11 @@ const appRoutes: Routes = [
     AppAuthorizationComponent,
     AuthValueComponent,
     AuthValueSinglesComponent,
-    AuthValueSeloptsComponent
+    AuthValueSeloptsComponent,
+    AppCategoryListComponent,
+    AppCategoryDetailComponent,
+    AppCategoryDetailAppComponent,
+    AppCategoryDetailRoleComponent
   ],
   imports: [
     BrowserModule,

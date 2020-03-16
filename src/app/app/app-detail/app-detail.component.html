@@ -39,10 +39,10 @@
       <a class="nav-link" [class.active]="tabStrip===1" href="javascript:void(0);" (click)="switchTabStrip(1)">Target</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [class.active]="tabStrip===2" href="javascript:void(0);" (click)="switchTabStrip(2)">Categories</a>
+      <a class="nav-link" [class.active]="tabStrip===2" href="javascript:void(0);" (click)="switchTabStrip(2)">Authorization</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [class.active]="tabStrip===3" href="javascript:void(0);" (click)="switchTabStrip(3)">Authorization</a>
+      <a class="nav-link" [class.active]="tabStrip===3" href="javascript:void(0);" (click)="switchTabStrip(3)">Categories</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" [class.active]="tabStrip===4" href="javascript:void(0);" (click)="switchTabStrip(4)">Admin</a>
@@ -51,8 +51,8 @@
 
   <div class="mt-2" [ngSwitch]="tabStrip">
     <app-app-target *ngSwitchCase="1" [mainForm]="mainForm" [relationMetas]="relationMetas" [readonly]="readonly"></app-app-target>
-    <app-app-categories *ngSwitchCase="2" [mainForm]="mainForm" [readonly]="readonly"></app-app-categories>
-    <app-app-authorization *ngSwitchCase="3" [mainForm]="mainForm" [readonly]="readonly"></app-app-authorization>
+    <app-app-authorization *ngSwitchCase="2" [mainForm]="mainForm" [readonly]="readonly"></app-app-authorization>
+    <app-app-categories *ngSwitchCase="3" [mainForm]="mainForm" [readonly]="readonly"></app-app-categories>
     <app-admin-info *ngSwitchCase="4" [mainForm]="mainForm" [relationMetas]="relationMetas" [adminRelation]="'app'"></app-admin-info>
   </div>
 </div>

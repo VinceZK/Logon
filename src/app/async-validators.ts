@@ -54,3 +54,20 @@ export function existingAuthObjectValidator(identityService: IdentityService,
       )));
   };
 }
+
+export function existingAppCategoryValidator(identityService: IdentityService,
+                                            messageService: MessageService): AsyncValidatorFn {
+  return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
+    return timer(500).pipe(
+      switchMap( () => identityService.getAppCategoryByID(control.value).pipe(
+        map(data => {
+          if (data['r_app_category'] && data['r_app_category'][0]['ID'] === control.value) {
+            return {message: messageService.generateMessage('appCategory', 'APP_CATEGORY_EXISTS',
+                'E', control.value).msgShortText};
+          } else {
+            return null;
+          }
+        })
+      )));
+  };
+}

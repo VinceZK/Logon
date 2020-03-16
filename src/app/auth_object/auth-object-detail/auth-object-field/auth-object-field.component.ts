@@ -76,7 +76,7 @@ export class AuthObjectFieldComponent implements OnInit {
 
   onSearchHelp(rowID: number, exportObject: AbstractControl): void {
     const afterExportFn = function (context: any, rowIDx: number) {
-      return () => context.onChangeAuthField(rowIDx);
+      return () => context.onChangeKey(rowIDx);
     }(this, rowID).bind(this);
 
     this.searchHelpComponent.openSearchHelpModalByEntity('authField', 'authField',

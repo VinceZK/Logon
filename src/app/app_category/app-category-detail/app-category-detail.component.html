@@ -1,0 +1,61 @@
+<nav class="navbar dk-fixed-top navbar-light bg-light">
+  <div>
+    <span class="font-weight-bold mb-0 mx-1">{{isNewMode? 'New App Category' :
+      readonly? 'Display App Category' : 'Change App Category'}}</span>
+  </div>
+
+  <div class="flex-row-reverse">
+    <button class="btn btn-sm btn-outline-primary mr-2" type="button" title="Edit/Display" id="editDisplay" (click)="switchEditDisplay()">
+      <span *ngIf="readonly" class="fas fa-edit"> Edit</span>
+      <span *ngIf="!readonly" class="fas fa-glasses"> Display</span>
+    </button>
+    <button class="btn btn-sm btn-outline-primary mr-2" type="button" title="Save" id="save" (click)="save()" [disabled]="readonly">
+      <span class="fas fa-save"> Save</span>
+    </button>
+  </div>
+</nav>
+
+<div class="mt-2 mb-2">
+  <dk-message></dk-message>
+</div>
+
+<div *ngIf="mainForm" class="mx-2">
+  <div class="mt-2 ml-1 row">
+    <dk-app-attribute-form2 class="col-md-4"
+                            [attributeControl]="getAttrCtrlFromID('ID')"
+                            [formGroup]="mainForm"
+                            [readonly]="!isNewMode"
+                            [isSmallSize] = "true">
+    </dk-app-attribute-form2>
+    <dk-app-attribute-form2 class="col-md-4"
+                            [attributeControl]="getAttrCtrlFromID('NAME')"
+                            [formGroup]="mainForm"
+                            [readonly]="readonly"
+                            [isSmallSize] = "true">
+    </dk-app-attribute-form2>
+    <dk-app-attribute-form2 class="col-md-4"
+                            [attributeControl]="getAttrCtrlFromID('ICON')"
+                            [formGroup]="mainForm"
+                            [readonly]="readonly"
+                            [isSmallSize] = "true">
+    </dk-app-attribute-form2>
+  </div>
+
+  <ul class="nav nav-tabs mt-1">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tabStrip===1" href="javascript:void(0);" (click)="switchTabStrip(1)">Apps</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tabStrip===2" href="javascript:void(0);" (click)="switchTabStrip(2)">Roles</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tabStrip===3" href="javascript:void(0);" (click)="switchTabStrip(3)">Admin</a>
+    </li>
+  </ul>
+
+  <div class="mt-2" [ngSwitch]="tabStrip">
+    <app-app-category-detail-app *ngSwitchCase="1" [mainForm]="mainForm"  [readonly]="readonly"></app-app-category-detail-app>
+    <app-app-category-detail-role *ngSwitchCase="2" [mainForm]="mainForm" ></app-app-category-detail-role>
+    <app-admin-info *ngSwitchCase="3" [mainForm]="mainForm" [relationMetas]="relationMetas" [adminRelation]="'category'"></app-admin-info>
+  </div>
+</div>
