@@ -1,0 +1,27 @@
+.dk-auth-main {
+  display: block;
+}
+.dk-checkbox {
+  width: 1rem;
+}
+.dk-table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  border: none;
+}
+.dk-table td {
+  vertical-align: middle;
+}
+.dk-auth-object {
+  width: 20rem;
+}
+.dk-auth-status {
+  width: 3rem;
+}
+.dk-auth-value {
+  width: 100%;
+}
+.collapsed {
+  display: none;
+}

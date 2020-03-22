@@ -16,36 +16,36 @@
   </thead>
 
   <tbody>
-  <tr *ngFor="let appAuthObjForm of appAuthObjFormArray.controls; let i = index" class="treegrid-expanded"
-      [class.collapsed]="appAuthObjForm.get('ROW_TYPE').value === 'FIELD' && appAuthObjForm.get('COLLAPSED').value">
-    <td class="dk-checkbox" [formGroup]="appAuthObjForm">
+  <tr *ngFor="let authObjForm of authObjFormArray.controls; let i = index" class="treegrid-expanded"
+      [class.collapsed]="authObjForm.get('ROW_TYPE').value === 'FIELD' && authObjForm.get('COLLAPSED').value">
+    <td class="dk-checkbox" [formGroup]="authObjForm">
       <input class="form-control form-control-sm" type="checkbox" formControlName="CHECKED" (click)="checkAuthObject(i)">
     </td>
-    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'OBJECT'" >
-      <span [ngClass]="{'treegrid-expander-expanded': !appAuthObjForm.get('COLLAPSED').value,
-            'treegrid-expander-collapsed': appAuthObjForm.get('COLLAPSED').value}"
+    <td *ngIf="authObjForm.get('ROW_TYPE').value === 'OBJECT'" >
+      <span [ngClass]="{'treegrid-expander-expanded': !authObjForm.get('COLLAPSED').value,
+            'treegrid-expander-collapsed': authObjForm.get('COLLAPSED').value}"
             class="treegrid-expander" (click)="expendCollapse(i)">
-      </span>{{appAuthObjForm.get('OBJ_NAME').value}}
+      </span>{{authObjForm.get('OBJ_NAME').value}}
     </td>
-    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'FIELD'" >
+    <td *ngIf="authObjForm.get('ROW_TYPE').value === 'FIELD'" >
       <span class="treegrid-indent"></span>
       <span class="treegrid-expander"></span>
-      {{appAuthObjForm.get('FIELD_NAME').value}}
+      {{authObjForm.get('FIELD_NAME').value}}
     </td>
 
     <td>
       <button class="btn btn-sm" type="button" id="add" [disabled]="readonly" (click)="setFullPermission(i)" title="Full Permission">
-        <span [ngClass]="{'green-light': appAuthObjForm.get('STATUS').value === 'green',
-                          'yellow-light': appAuthObjForm.get('STATUS').value  === 'yellow',
-                          'red-light': appAuthObjForm.get('STATUS').value  === 'red'}"
+        <span [ngClass]="{'green-light': authObjForm.get('STATUS').value === 'green',
+                          'yellow-light': authObjForm.get('STATUS').value  === 'yellow',
+                          'red-light': authObjForm.get('STATUS').value  === 'red'}"
           class="traffic-light"></span>
       </button>
     </td>
 
-    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'OBJECT'">{{appAuthObjForm.get('DESC').value}}</td>
-    <td *ngIf="appAuthObjForm.get('ROW_TYPE').value === 'FIELD'">
+    <td *ngIf="authObjForm.get('ROW_TYPE').value === 'OBJECT'">{{authObjForm.get('DESC').value}}</td>
+    <td *ngIf="authObjForm.get('ROW_TYPE').value === 'FIELD'">
       <a class="nav-link" href="javascript:void(0);" (click)="openAuthValueModal(i)">
-        {{appAuthObjForm.get('DEFAULT_AUTH_VALUE').value? appAuthObjForm.get('DEFAULT_AUTH_VALUE').value
+        {{authObjForm.get('AUTH_VALUE').value? authObjForm.get('AUTH_VALUE').value
         : 'Click to maintain'}}</a>
     </td>
   </tr>

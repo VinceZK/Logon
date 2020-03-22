@@ -3,14 +3,14 @@ import {AbstractControl, FormArray, FormGroup} from '@angular/forms';
 import {SearchHelpComponent} from 'jor-angular';
 
 @Component({
-  selector: 'app-app-categories',
-  templateUrl: './app-categories.component.html',
-  styleUrls: ['./app-categories.component.css']
+  selector: 'app-permission-detail-user',
+  templateUrl: './permission-detail-user.component.html',
+  styleUrls: ['./permission-detail-user.component.css']
 })
-export class AppCategoriesComponent implements OnInit {
+export class PermissionDetailUserComponent implements OnInit {
   @Input() readonly: boolean;
   @Input() mainForm: FormGroup;
-  appCategoryFormArray: FormArray;
+  userFormArray: FormArray;
 
   constructor() { }
 
@@ -18,7 +18,7 @@ export class AppCategoriesComponent implements OnInit {
   private searchHelpComponent: SearchHelpComponent;
 
   ngOnInit() {
-    this.appCategoryFormArray = this.mainForm.get('appCategories') as FormArray;
+    this.userFormArray = this.mainForm.get('users') as FormArray;
   }
 
   onSearchHelp(rowID: number, exportObject: AbstractControl): void {
@@ -26,7 +26,7 @@ export class AppCategoriesComponent implements OnInit {
       return () => context.onChangeKey(rowIDx);
     }(this, rowID).bind(this);
 
-    this.searchHelpComponent.openSearchHelpModalByEntity('category', 'r_app_category',
+    this.searchHelpComponent.openSearchHelpModalByEntity('person', 'r_user',
       exportObject, this.readonly, null, null, afterExportFn);
   }
 }

@@ -1,0 +1,74 @@
+<div class="dk-auth-main mx-3">
+  <div class="btn-toolbar justify-content-end" role="toolbar">
+    <button type="button" id="remove-object" class="btn btn-light btn-sm" (click)="delete()" [disabled]="readonly">
+      <span class="fas fa-minus"></span> Remove</button>
+    <button type="button" id="new" class="btn btn-light btn-sm" (click)="add()" [disabled]="readonly">
+      <span class="fas fa-plus"></span> Add</button>
+  </div>
+  <table class="table table-bordered table-sm dk-table" [formGroup]="mainForm">
+    <thead class="thead-light">
+    <tr>
+      <th class="dk-checkbox"><input name="btSelectAll" type="checkbox" (click)="checkAll()"></th>
+      <th class="dk-auth-object">Category / App Name</th>
+      <th class="dk-auth-order">Order</th>
+      <th class="dk-auth-value">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr *ngFor="let categoryForm of categoryFormArray.controls; let i = index" class="treegrid-expanded"
+        [class.collapsed]="categoryForm.get('ROW_TYPE').value === 'app' && categoryForm.get('COLLAPSED').value">
+      <td class="dk-checkbox" [formGroup]="categoryForm">
+        <input class="form-control form-control-sm" type="checkbox" formControlName="CHECKED" (click)="checkCategory(i)">
+      </td>
+      <td *ngIf="categoryForm.get('ROW_TYPE').value === 'category'" >
+      <span [ngClass]="{'treegrid-expander-expanded': !categoryForm.get('COLLAPSED').value,
+            'treegrid-expander-collapsed': categoryForm.get('COLLAPSED').value}"
+            class="treegrid-expander" (click)="expendCollapse(i)">
+      </span>
+        <span [ngClass]="categoryForm.get('category.ICON').value"></span>
+        {{categoryForm.get('category.ID').value}}
+      </td>
+      <td *ngIf="categoryForm.get('ROW_TYPE').value === 'app'" >
+        <span class="treegrid-indent"></span>
+        <span class="treegrid-expander"></span>
+        {{categoryForm.get('app.APP_ID').value}}
+      </td>
+      <td [formGroup]="categoryForm">
+        <input class="form-control form-control-sm" type="number" formControlName="ORDER"
+               [readOnly]="categoryForm.get('ROW_TYPE').value === 'app'">
+      </td>
+      <td *ngIf="categoryForm.get('ROW_TYPE').value === 'category'" >{{categoryForm.get('category.NAME').value}}</td>
+      <td *ngIf="categoryForm.get('ROW_TYPE').value === 'app'" >{{categoryForm.get('app.NAME').value}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="addAppCategory" tabindex="-1" role="dialog"
+     [ngClass]="{'show': isCategoryModalShown}"
+     [ngStyle]="{'display': displayCategoryModal}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAuthObjectTitle">Add App Category</h5>
+        <button type="button" class="close" (click)="closeCategoryModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <dk-app-attribute-form2 *ngIf = "newCategoryForm && categoryAttr"
+                                [attributeControl]="categoryAttr"
+                                [formGroup]="newCategoryForm.get('category')"
+                                [isSmallSize] = "true"
+                                [readonly]="false"
+                                (keyup)="enterConfirm($event)">
+        </dk-app-attribute-form2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-secondary" (click)="closeCategoryModal()">Cancel</button>
+        <button type="button" class="btn btn-sm btn-primary" (click)="confirm()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>

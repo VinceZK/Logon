@@ -1,0 +1,7 @@
+.dk-text {
+  overflow: auto;
+  word-wrap: break-word;
+}
+.noshown {
+  display: none;
+}

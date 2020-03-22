@@ -1,0 +1,24 @@
+<div class="row ml-1">
+  <div class="col-3">
+    <div class="btn-toolbar justify-content-end mt-3" role="toolbar">
+      <button type="button" id="remove-object" class="btn btn-light btn-sm"></button>
+    </div>
+    <div class="list-group">
+      <div *ngFor="let profileCtrl of profileFormArray.controls" >
+        <a *ngIf="profileCtrl.get('ROW_TYPE').value === 'category'" (click)="onSelect(profileCtrl)"
+         class="list-group-item list-group-item-action flex-column align-items-start"
+         [class.active]="profileCtrl.get('profile.PROFILE_NAME').value === currentProfileFormGroup.get('profile.PROFILE_NAME').value">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1 dk-text">{{profileCtrl.get('profile.DESC').value}}</h5>
+        </div>
+        <p class="mb-1 dk-text">{{profileCtrl.get('profile.PROFILE_NAME').value}}</p>
+        <small>changed at: {{profileCtrl.get('profile.CHANGE_TIME').value}}</small>
+      </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-9">
+    <app-authorization [mainForm]="currentProfileFormGroup.get('profile')" [ctrlName]="'authorizations'"
+                       [readonly]="readonly"></app-authorization>
+  </div>
+</div>

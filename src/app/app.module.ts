@@ -19,14 +19,21 @@ import { AuthObjectListComponent } from './auth_object/auth-object-list/auth-obj
 import { AuthObjectDetailComponent } from './auth_object/auth-object-detail/auth-object-detail.component';
 import { AuthObjectFieldComponent } from './auth_object/auth-object-detail/auth-object-field/auth-object-field.component';
 import { AdminInfoComponent } from './admin-info/admin-info.component';
-import { AppAuthorizationComponent } from './app/app-detail/app-authorization/app-authorization.component';
-import { AuthValueComponent } from './auth-value/auth-value.component';
-import { AuthValueSinglesComponent } from './auth-value/auth-value-singles/auth-value-singles.component';
-import { AuthValueSeloptsComponent } from './auth-value/auth-value-selopts/auth-value-selopts.component';
+import { AuthorizationComponent } from './authorization/authorization.component';
+import { AuthValueComponent } from './authorization/auth-value/auth-value.component';
+import { AuthValueSinglesComponent } from './authorization/auth-value/auth-value-singles/auth-value-singles.component';
+import { AuthValueSeloptsComponent } from './authorization/auth-value/auth-value-selopts/auth-value-selopts.component';
 import { AppCategoryListComponent } from './app_category/app-category-list/app-category-list.component';
 import { AppCategoryDetailComponent } from './app_category/app-category-detail/app-category-detail.component';
-import { AppCategoryDetailAppComponent } from './app_category/app-category-detail/app-category-detail-app/app-category-detail-app.component';
-import { AppCategoryDetailRoleComponent } from './app_category/app-category-detail/app-category-detail-role/app-category-detail-role.component';
+import { AppCategoryDetailAppComponent } from
+    './app_category/app-category-detail/app-category-detail-app/app-category-detail-app.component';
+import { AppCategoryDetailRoleComponent } from
+    './app_category/app-category-detail/app-category-detail-role/app-category-detail-role.component';
+import { ProfileListComponent } from './profile/profile-list/profile-list.component';
+import { ProfileDetailComponent } from './profile/profile-detail/profile-detail.component';
+import { PermissionDetailCategoryComponent } from './permission/permission-detail/permission-detail-category/permission-detail-category.component';
+import { PermissionDetailProfileComponent } from './permission/permission-detail/permission-detail-profile/permission-detail-profile.component';
+import { PermissionDetailUserComponent } from './permission/permission-detail/permission-detail-user/permission-detail-user.component';
 
 const appRoutes: Routes = [
   {
@@ -45,7 +52,9 @@ const appRoutes: Routes = [
   { path: 'auth-objects/:authObjName', component: AuthObjectDetailComponent, canDeactivate: [WorkProtectionGuard]},
   { path: 'permissions', component: PermissionListComponent },
   { path: 'permissions/:permissionName', component: PermissionDetailComponent, canDeactivate: [WorkProtectionGuard]},
-  { path: '**', redirectTo: 'app-categories', pathMatch: 'full'}
+  { path: 'profiles', component: ProfileListComponent },
+  { path: 'profiles/:profileName', component: ProfileDetailComponent, canDeactivate: [WorkProtectionGuard]},
+  { path: '**', redirectTo: 'permissions', pathMatch: 'full'}
 ];
 
 @NgModule({
@@ -61,14 +70,19 @@ const appRoutes: Routes = [
     AuthObjectDetailComponent,
     AuthObjectFieldComponent,
     AdminInfoComponent,
-    AppAuthorizationComponent,
+    AuthorizationComponent,
     AuthValueComponent,
     AuthValueSinglesComponent,
     AuthValueSeloptsComponent,
     AppCategoryListComponent,
     AppCategoryDetailComponent,
     AppCategoryDetailAppComponent,
-    AppCategoryDetailRoleComponent
+    AppCategoryDetailRoleComponent,
+    ProfileListComponent,
+    ProfileDetailComponent,
+    PermissionDetailCategoryComponent,
+    PermissionDetailProfileComponent,
+    PermissionDetailUserComponent
   ],
   imports: [
     BrowserModule,

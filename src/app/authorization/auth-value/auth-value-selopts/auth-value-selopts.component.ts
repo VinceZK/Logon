@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormArray, FormBuilder} from '@angular/forms';
 import {AttributeBase} from 'jor-angular';
-import {Operator, Option} from '../../permssion';
+import {Operator, Option} from '../../../permssion';
 
 @Component({
   selector: 'app-auth-value-selopts',

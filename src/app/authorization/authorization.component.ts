@@ -1,19 +1,20 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup} from '@angular/forms';
-import {Attribute, AttributeBase, AttributeControlService, Entity, EntityService, SearchHelpComponent} from 'jor-angular';
-import {AuthValueComponent} from '../../../auth-value/auth-value.component';
-import {IdentityService} from '../../../identity.service';
+import {Attribute, AttributeBase, AttributeControlService, EntityService, SearchHelpComponent} from 'jor-angular';
+import {AuthValueComponent} from './auth-value/auth-value.component';
+import {IdentityService} from '../identity.service';
 import {Message, MessageService} from 'ui-message-angular';
 
 @Component({
-  selector: 'app-app-authorization',
-  templateUrl: './app-authorization.component.html',
-  styleUrls: ['./app-authorization.component.css']
+  selector: 'app-authorization',
+  templateUrl: './authorization.component.html',
+  styleUrls: ['./authorization.component.css']
 })
-export class AppAuthorizationComponent implements OnInit {
+export class AuthorizationComponent implements OnInit, OnChanges {
   @Input() readonly: boolean;
   @Input() mainForm: FormGroup;
-  appAuthObjFormArray: FormArray;
+  @Input() ctrlName: string;
+  authObjFormArray: FormArray;
   currentAuthFieldValueForm: FormGroup;
   newAuthFieldValueForm: FormGroup;
   isAuthValueModalShown = false;
@@ -36,17 +37,23 @@ export class AppAuthorizationComponent implements OnInit {
   private authValueComponent: AuthValueComponent;
 
   ngOnInit() {
-    this.appAuthObjFormArray = this.mainForm.get('appAuthObjects') as FormArray;
+  }
+
+  ngOnChanges() {
+    this.authObjFormArray = <FormArray>this.mainForm.get(this.ctrlName);
+    this.authObjFormArray.controls.forEach( ctrl => {
+      if (ctrl.get('ROW_TYPE').value === 'FIELD') { ctrl.get('CHECKED').disable(); }
+    });
   }
 
   checkAll(): void {
-    this.appAuthObjFormArray.controls.forEach( authObjCtrl => authObjCtrl.get('CHECKED').setValue(!this.selectAll));
+    this.authObjFormArray.controls.forEach( authObjCtrl => authObjCtrl.get('CHECKED').setValue(!this.selectAll));
     this.selectAll = !this.selectAll;
   }
 
   checkAuthObject(idx: number): void {
-    const currentAuthObjCtrl = this.appAuthObjFormArray.at(idx);
-    this.appAuthObjFormArray.controls.forEach( (authObjCtrl, index) => {
+    const currentAuthObjCtrl = this.authObjFormArray.at(idx);
+    this.authObjFormArray.controls.forEach( (authObjCtrl, index) => {
       if (index <= idx) { return; }
       if (authObjCtrl.get('NODE_ID').value === currentAuthObjCtrl.get('NODE_ID').value) {
         authObjCtrl.get('CHECKED').setValue(!currentAuthObjCtrl.get('CHECKED').value);
@@ -62,7 +69,7 @@ export class AppAuthorizationComponent implements OnInit {
       STATUS: 'red',
       RELATIONSHIP_INSTANCE_GUID: '',
       auth_object_INSTANCE_GUID: '',
-      DEFAULT_AUTH_VALUE: '',
+      AUTH_VALUE: '',
       OBJ_NAME: '',
       DESC: '',
       ROW_TYPE: 'OBJECT',
@@ -94,16 +101,16 @@ export class AppAuthorizationComponent implements OnInit {
         if ('ENTITY_ID' in data) {
           this.newAuthFieldValueForm.get('auth_object_INSTANCE_GUID').setValue(data['INSTANCE_GUID']);
           this.newAuthFieldValueForm.get('DESC').setValue(data['authObject'][0]['DESC']);
-          this.appAuthObjFormArray.push(this.newAuthFieldValueForm);
+          this.authObjFormArray.push(this.newAuthFieldValueForm);
           data['relationships'][0].values.forEach( value => {
-            this.appAuthObjFormArray.push(this.fb.group({
+            this.authObjFormArray.push(this.fb.group({
               CHECKED: [{value: '', disabled: true}],
               COLLAPSED: false,
               NODE_ID: this.nodeID,
               STATUS: 'red',
               RELATIONSHIP_INSTANCE_GUID: '',
               auth_object_INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
-              DEFAULT_AUTH_VALUE: '',
+              AUTH_VALUE: '',
               OBJ_NAME: authObjName,
               DESC: this.newAuthFieldValueForm.get('DESC').value,
               ROW_TYPE: 'FIELD',
@@ -120,11 +127,11 @@ export class AppAuthorizationComponent implements OnInit {
   }
 
   delete(): void {
-    let index = this.appAuthObjFormArray.controls.findIndex( authObjCtrl => authObjCtrl.get('CHECKED').value);
+    let index = this.authObjFormArray.controls.findIndex( authObjCtrl => authObjCtrl.get('CHECKED').value);
     while ( index !== -1) {
-      this.appAuthObjFormArray.removeAt(index);
-      this.appAuthObjFormArray.markAsDirty();
-      index = this.appAuthObjFormArray.controls.findIndex( authObjCtrl => authObjCtrl.get('CHECKED').value);
+      this.authObjFormArray.removeAt(index);
+      this.authObjFormArray.markAsDirty();
+      index = this.authObjFormArray.controls.findIndex( authObjCtrl => authObjCtrl.get('CHECKED').value);
     }
   }
 
@@ -138,9 +145,9 @@ export class AppAuthorizationComponent implements OnInit {
   }
 
   expendCollapse(idx: number): void {
-    const currentCtrl = this.appAuthObjFormArray.at(idx);
+    const currentCtrl = this.authObjFormArray.at(idx);
     const parentNode = currentCtrl.get('NODE_ID').value;
-    this.appAuthObjFormArray.controls.forEach( appAuthObjCtrl => {
+    this.authObjFormArray.controls.forEach( appAuthObjCtrl => {
       if (appAuthObjCtrl.get('NODE_ID').value === parentNode ) {
         appAuthObjCtrl.get('COLLAPSED').setValue(!appAuthObjCtrl.get('COLLAPSED').value);
       }
@@ -149,7 +156,7 @@ export class AppAuthorizationComponent implements OnInit {
 
   openAuthValueModal(idx: number): void {
     this.isAuthValueModalShown = true;
-    this.currentAuthFieldValueForm = <FormGroup>this.appAuthObjFormArray.at(idx);
+    this.currentAuthFieldValueForm = <FormGroup>this.authObjFormArray.at(idx);
   }
 
   addAuthValue(): void {
@@ -160,37 +167,37 @@ export class AppAuthorizationComponent implements OnInit {
   }
 
   setFullPermission(idx: number): void {
-    const currentAuthObjForm = this.appAuthObjFormArray.at(idx);
+    const currentAuthObjForm = this.authObjFormArray.at(idx);
     if (currentAuthObjForm.get('STATUS').value === 'green') { return; }
 
     if (currentAuthObjForm.get('ROW_TYPE').value === 'OBJECT') {
       currentAuthObjForm.get('STATUS').setValue('green');
-      this.appAuthObjFormArray.controls.forEach( appAuthObjForm => {
+      this.authObjFormArray.controls.forEach( appAuthObjForm => {
         if (appAuthObjForm.get('NODE_ID').value === currentAuthObjForm.get('NODE_ID').value &&
             appAuthObjForm.get('ROW_TYPE').value === 'FIELD') {
-          appAuthObjForm.get('DEFAULT_AUTH_VALUE').setValue('"*"');
-          appAuthObjForm.get('DEFAULT_AUTH_VALUE').markAsDirty();
+          appAuthObjForm.get('AUTH_VALUE').setValue('"*"');
+          appAuthObjForm.get('AUTH_VALUE').markAsDirty();
           appAuthObjForm.get('STATUS').setValue('green');
         }
       });
     } else { // Field
-      currentAuthObjForm.get('DEFAULT_AUTH_VALUE').setValue('"*"');
-      currentAuthObjForm.get('DEFAULT_AUTH_VALUE').markAsDirty();
+      currentAuthObjForm.get('AUTH_VALUE').setValue('"*"');
+      currentAuthObjForm.get('AUTH_VALUE').markAsDirty();
       currentAuthObjForm.get('STATUS').setValue('green');
       this._coordinateStatus(currentAuthObjForm);
     }
   }
 
   _coordinateStatus(appAuthObjForm: AbstractControl): void {
-    const parentAuthObjectCtrl = this.appAuthObjFormArray.controls.find( ctrl =>
+    const parentAuthObjectCtrl = this.authObjFormArray.controls.find( ctrl =>
       ctrl.get('ROW_TYPE').value === 'OBJECT' &&
       ctrl.get('NODE_ID').value === appAuthObjForm.get('NODE_ID').value);
-    if (this.appAuthObjFormArray.controls.findIndex( ctrl => ctrl.get('ROW_TYPE').value === 'FIELD' &&
+    if (this.authObjFormArray.controls.findIndex( ctrl => ctrl.get('ROW_TYPE').value === 'FIELD' &&
       ctrl.get('NODE_ID').value === appAuthObjForm.get('NODE_ID').value &&
       ctrl.get('STATUS').value === 'red') === -1) {
       parentAuthObjectCtrl.get('STATUS').setValue('green');
     } else {
-      if (this.appAuthObjFormArray.controls.findIndex( ctrl => ctrl.get('ROW_TYPE').value === 'FIELD' &&
+      if (this.authObjFormArray.controls.findIndex( ctrl => ctrl.get('ROW_TYPE').value === 'FIELD' &&
         ctrl.get('NODE_ID').value === appAuthObjForm.get('NODE_ID').value &&
         ctrl.get('STATUS').value === 'green') === -1) {
         parentAuthObjectCtrl.get('STATUS').setValue('red');

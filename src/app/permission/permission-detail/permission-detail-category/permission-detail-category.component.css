@@ -16,11 +16,11 @@
 .dk-auth-object {
   width: 20rem;
 }
-.dk-auth-status {
-  width: 3rem;
+.dk-auth-order {
+  width: 5rem;
 }
 .dk-auth-value {
-  width: 100%;
+  width: 30rem;
 }
 .collapsed {
   display: none;

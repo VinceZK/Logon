@@ -145,5 +145,32 @@ export const msgStore = [
         longText: ''
       }
     }
+  },
+  { msgCat: 'AUTH_PROFILE',
+    msgName: 'AUTH_PROFILE_EXISTS',
+    msgText: {
+      EN: {
+        shortText: 'The authorization profile %s exists.',
+        longText: ''
+      }
+    }
+  },
+  { msgCat: 'AUTH_PROFILE',
+    msgName: 'INVALID',
+    msgText: {
+      EN: {
+        shortText: 'The authorization profile contains invalid inputs, please check.',
+        longText: ''
+      }
+    }
+  },
+  { msgCat: 'AUTH_PROFILE',
+    msgName: 'SAVED',
+    msgText: {
+      EN: {
+        shortText: 'The authorization profile is saved.',
+        longText: ''
+      }
+    }
   }
 ];

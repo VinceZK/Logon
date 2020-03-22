@@ -23,7 +23,7 @@ export class PermissionDetailComponent implements OnInit {
   action: string;
   instanceGUID: string;
   originalValue = {};
-  changedValue = {};
+  operations = [];
   tabStrip = 1;
 
   constructor(private fb: FormBuilder,
@@ -102,44 +102,27 @@ export class PermissionDetailComponent implements OnInit {
 
   _switch2DisplayMode(): void {
     this.readonly = true;
-    this._setCheckBoxState();
 
     const permissionNameCtrl = this.mainForm.get('NAME') as FormControl;
     permissionNameCtrl.clearAsyncValidators();
-    // const emailArray = this.mainForm.get('appCategories') as FormArray;
-    // let lastIndex = emailArray.length - 1;
-    // while (lastIndex >= 0) {
-    //   const emailFormGroup = emailArray.at(lastIndex);
-    //   if (emailFormGroup.invalid || !emailFormGroup.value.EMAIL) {
-    //     emailArray.removeAt(lastIndex);
-    //   }
-    //   lastIndex--;
-    // }
+
     this.mainForm.markAsPristine();
     // Replace the URL from change to display
-    window.history.replaceState({}, '', `/users/${permissionNameCtrl.value};action=display`);
+    window.history.replaceState({}, '', `/permissions/${permissionNameCtrl.value};action=display`);
   }
 
   _switch2EditMode(): void {
     this.readonly = false;
-    this._setCheckBoxState();
 
     const permissionNameCtrl = this.mainForm.get('NAME') as FormControl;
     if (this.isNewMode) {
       permissionNameCtrl.setAsyncValidators(
         existingPermissionValidator(this.identityService, this.messageService));
     }
-    // const roleArray = this.userForm.get('userRole') as FormArray;
-    // roleArray.push( this.fb.group({
-    //   NAME: [''],
-    //   DESCRIPTION: [''],
-    //   system_role_INSTANCE_GUID: [''],
-    //   RELATIONSHIP_INSTANCE_GUID: [''],
-    // }));
 
     // Replace the URL from to display
     if (this.action === 'display') {this.action = 'change'; }
-    window.history.replaceState({}, '', `/users/${permissionNameCtrl.value};action=` + this.action);
+    window.history.replaceState({}, '', `/permissions/${permissionNameCtrl.value};action=` + this.action);
   }
 
   _createNewEntity(): Observable<Entity> {
@@ -167,10 +150,40 @@ export class PermissionDetailComponent implements OnInit {
       })
     });
     const parsedRelationship = this._parseRelationships( data['relationships'] );
-    this.mainForm.addControl('appCategories', this.fb.array(
-      parsedRelationship.appCategories.map( appCategory => this.fb.group(appCategory))));
-    this.mainForm.addControl('profiles', this.fb.array(
-      parsedRelationship.profiles.map( profile => this.fb.group(profile))));
+    this.mainForm.addControl('categories', this.fb.array(
+      parsedRelationship.categories.map( category => {
+        const categoryCtrl =  this.fb.group({
+          CHECKED: category.CHECKED,
+          COLLAPSED: category.COLLAPSED,
+          ROW_TYPE: category.ROW_TYPE,
+          RELATIONSHIP_INSTANCE_GUID: category.RELATIONSHIP_INSTANCE_GUID,
+          app_category_INSTANCE_GUID: category.app_category_INSTANCE_GUID,
+          auth_profile_INSTANCE_GUID: category.auth_profile_INSTANCE_GUID,
+          ORDER: category.ORDER
+        });
+        if (category.category) {
+          categoryCtrl.addControl('category', this.fb.group({
+            ID: category.category.ID,
+            NAME: category.category.NAME,
+            ICON: category.category.ICON
+            }));
+        }
+        if (category.profile) {
+          categoryCtrl.addControl('profile', this.fb.group({
+            PROFILE_NAME: category.profile.PROFILE_NAME,
+            DESC: category.profile.DESC,
+            CHANGE_TIME: category.profile.CHANGE_TIME,
+            authorizations: this.fb.array(category.profile.authorizations.map( authorization => this.fb.group(authorization) ))
+          }));
+        }
+        if (category.app) {
+          categoryCtrl.addControl('app', this.fb.group({
+            APP_ID: category.app.APP_ID,
+            NAME: category.app.NAME
+          }));
+        }
+        return categoryCtrl;
+      })));
     this.mainForm.addControl('users', this.fb.array(
       parsedRelationship.users.map( user => this.fb.group(user))));
     this.originalValue = this.mainForm.getRawValue();
@@ -178,18 +191,14 @@ export class PermissionDetailComponent implements OnInit {
 
   _parseRelationships( relationships: Relationship[] ): any {
     const parsedRelationship = {
-      roleUsers: [],
-      appCategories: [],
-      profiles: []
+      users: [],
+      categories: []
     };
     if (!relationships) { return parsedRelationship; }
     relationships.forEach( relationship => {
       switch (relationship.RELATIONSHIP_ID) {
-        case 'rs_system_role_category':
-          __parseRoleAppCategory(relationship);
-          break;
-        case 'rs_system_role_profile':
-          __parseRoleProfile(relationship);
+        case 'rs_role_category_profile':
+          __parseRoleCategoryProfile(relationship, this);
           break;
         case 'rs_user_role':
           __parseRoleUsers(relationship);
@@ -200,66 +209,65 @@ export class PermissionDetailComponent implements OnInit {
     });
     return parsedRelationship;
 
+    function __parseRoleCategoryProfile( relationship: Relationship, context: any): void {
+      relationship.values.forEach( value => {
+        const appCategoryInstance = value.PARTNER_INSTANCES.find(
+          partnerInstance => partnerInstance.ROLE_ID === 'app_category');
+        const authProfileInstance = value.PARTNER_INSTANCES.find(
+          partnerInstance => partnerInstance.ROLE_ID === 'auth_profile');
+        parsedRelationship.categories.push({
+          CHECKED: '',
+          COLLAPSED: false,
+          ROW_TYPE: 'category',
+          RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
+          app_category_INSTANCE_GUID: appCategoryInstance.INSTANCE_GUID,
+          auth_profile_INSTANCE_GUID: authProfileInstance.INSTANCE_GUID,
+          ORDER: value['ORDER'],
+          category: {
+            ID: appCategoryInstance['r_app_category'][0]['ID'],
+            NAME: appCategoryInstance['r_app_category'][0]['NAME'],
+            ICON: appCategoryInstance['r_app_category'][0]['ICON']
+          },
+          profile: {
+            PROFILE_NAME: authProfileInstance['authProfile'][0]['PROFILE_NAME'],
+            DESC: authProfileInstance['authProfile'][0]['DESC'],
+            CHANGE_TIME: authProfileInstance['authProfile'][0]['CHANGE_TIME'],
+            authorizations: context.identityService.parseProfileAuthObject(authProfileInstance.relationships[0])
+          }
+        });
+        const rsAppCategory = appCategoryInstance['relationships'][0];
+        rsAppCategory.values.forEach( value2 => {
+          parsedRelationship.categories.push({
+            CHECKED: '',
+            COLLAPSED: false,
+            ROW_TYPE: 'app',
+            RELATIONSHIP_INSTANCE_GUID: value2['RELATIONSHIP_INSTANCE_GUID'],
+            app_category_INSTANCE_GUID: '',
+            auth_profile_INSTANCE_GUID: '',
+            ORDER: value2['ORDER'],
+            category: {
+              ID: appCategoryInstance['r_app_category'][0]['ID'],
+              NAME: appCategoryInstance['r_app_category'][0]['NAME'],
+              ICON: appCategoryInstance['r_app_category'][0]['ICON']
+            },
+            app: {
+              APP_ID: value2['PARTNER_INSTANCES'][0]['app'][0]['APP_ID'],
+              NAME: value2['PARTNER_INSTANCES'][0]['app'][0]['NAME'],
+            }
+          });
+        });
+      });
+    }
+
     function __parseRoleUsers( relationship: Relationship): void {
       relationship.values.forEach( value => {
-        parsedRelationship.roleUsers.push( {
+        parsedRelationship.users.push( {
           RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
           SYNCED: value['SYNCED'],
           INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
           USER_ID: value['PARTNER_INSTANCES'][0]['r_user'][0]['USER_ID'],
           USER_NAME: value['PARTNER_INSTANCES'][0]['r_user'][0]['USER_NAME']
         });
-      });
-    }
-
-    function __parseRoleAppCategory( relationship: Relationship): void {
-      relationship.values.forEach( value => {
-        const appCategory = {
-          RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
-          ORDER: value['ORDER'],
-          INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
-          NAME: value['PARTNER_INSTANCES'][0]['r_app_category'][0]['NAME'],
-          ICON: value['PARTNER_INSTANCES'][0]['r_app_category'][0]['ICON'],
-          apps: []
-        };
-
-        const rsAppCategory = value['PARTNER_INSTANCES'][0]['relationships'][0];
-        rsAppCategory.values.forEach( value2 => {
-          appCategory.apps.push({
-            RELATIONSHIP_INSTANCE_GUID: value2['RELATIONSHIP_INSTANCE_GUID'],
-            ORDER: value2['ORDER'],
-            INSTANCE_GUID: value2['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
-            APP_ID: value2['PARTNER_INSTANCES'][0]['app'][0]['APP_ID'],
-            NAME: value2['PARTNER_INSTANCES'][0]['app'][0]['NAME'],
-            ROUTE_LINK: value2['PARTNER_INSTANCES'][0]['app'][0]['ROUTE_LINK'],
-            IS_EXTERNAL: value2['PARTNER_INSTANCES'][0]['app'][0]['IS_EXTERNAL']
-          });
-        });
-        parsedRelationship.appCategories.push( appCategory );
-      });
-    }
-
-    function __parseRoleProfile( relationship: Relationship ): void {
-      relationship.values.forEach( value => {
-        const profile = {
-          RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
-          INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
-          PROFILE_NAME: value['PARTNER_INSTANCES'][0]['authProfile'][0]['PROFILE_NAME'],
-          DESC: value['PARTNER_INSTANCES'][0]['authProfile'][0]['DESC'],
-          CREATED_BY: value['PARTNER_INSTANCES'][0]['authProfile'][0]['CREATED_BY'],
-          CREATE_TIME: value['PARTNER_INSTANCES'][0]['authProfile'][0]['CREATE_TIME'],
-          CHANGED_BY: value['PARTNER_INSTANCES'][0]['authProfile'][0]['CHANGED_BY'],
-          CHANGE_TIME: value['PARTNER_INSTANCES'][0]['authProfile'][0]['CHANGE_TIME'],
-          authorizations: []
-        };
-        const authorizations = value['PARTNER_INSTANCES'][0]['r_authorization'];
-        authorizations.forEach( authorization => {
-          profile.authorizations.push({
-            ID: authorization['ID'],
-            VALUE: authorization['VALUE']
-          });
-        });
-        parsedRelationship.profiles.push( profile );
       });
     }
   }
@@ -276,49 +284,42 @@ export class PermissionDetailComponent implements OnInit {
       }
     };
     const parsedRelationship = this._parseRelationships( data['relationships'] );
-    this.originalValue['appCategories'] = parsedRelationship.appCategories;
-    this.originalValue['profiles'] = parsedRelationship.profiles;
+    this.originalValue['categories'] = parsedRelationship.categories;
     this.originalValue['users'] = parsedRelationship.users;
     this.mainForm.reset(this.originalValue);
   }
 
-  _setCheckBoxState() {
-    // const userPersonalizationForm = this.userForm.get('userPersonalization') as FormGroup;
-    // if (this.readonly) {
-    //   userPersonalizationForm.get('LANGUAGE').disable();
-    // } else {
-    //   userPersonalizationForm.get('LANGUAGE').enable();
-    // }
-  }
-
   save() {
     this.messageService.clearMessages();
-    if (this._composeChangesToUser()) {
-      this.identityService.save(<Entity>this.changedValue).subscribe( data => {
-        this.changedValue = {};
-        if ('INSTANCE_GUID' in data) {
-          const permissionName = data['r_role'][0]['NAME'];
-          this.instanceGUID = data['INSTANCE_GUID'];
-          this.isNewMode = false;
-          this.identityService.getPermissionDetail(permissionName).subscribe(instance => {
-            if ('ENTITY_ID' in instance) {
-              this._switch2DisplayMode();
-              this._resetValue(<Entity>instance);
-            } else {
-              const errorMessages = <Message[]>instance;
-              errorMessages.forEach( msg => this.messageService.add(msg));
-            }
-          });
-          this.messageService.reportMessage('PERMISSION', 'SAVED', 'S', permissionName);
-        } else {
-          const errorMessages = <Message[]>data;
-          errorMessages.forEach( msg => this.messageService.add(msg));
-        }
-      });
+    if (this._composeChanges()) {
+      console.log(this.operations);
+      // this.identityService.orchestrate(this.operations).subscribe( results => {
+      //   this.operations = [];
+      //   results.forEach( result => {
+      //     if (result.errs) {
+      //       const errorMessages = <Message[]>result;
+      //       errorMessages.forEach( msg => this.messageService.add(msg));
+      //     } else if (result.instance && result.instance.ENTITY_ID === 'permission') {
+      //       this.instanceGUID = result.instance.INSTANCE_GUID;
+      //       this.isNewMode = false;
+      //       const permissionName = result.instance['r_role']['NAME'];
+      //       this.identityService.getPermissionDetail(permissionName).subscribe(instance => {
+      //         if ('ENTITY_ID' in instance) {
+      //           this._switch2DisplayMode();
+      //           this._resetValue(<Entity>instance);
+      //         } else {
+      //           const errorMessages = <Message[]>instance;
+      //           errorMessages.forEach( msg => this.messageService.add(msg));
+      //         }
+      //       });
+      //       this.messageService.reportMessage('PERMISSION', 'SAVED', 'S', permissionName);
+      //     }
+      //   });
+      // });
     }
   }
 
-  _composeChangesToUser() {
+  _composeChanges() {
     if (this.mainForm.invalid) {
       this.messageService.reportMessage('PERMISSION', 'INVALID', 'E');
       return false;
@@ -329,36 +330,110 @@ export class PermissionDetailComponent implements OnInit {
       return false;
     }
 
-    this.changedValue['ENTITY_ID'] = 'permission';
-    this.changedValue['INSTANCE_GUID'] = this.instanceGUID;
+    const changedValue = {};
+    changedValue['ENTITY_ID'] = 'permission';
+    changedValue['INSTANCE_GUID'] = this.instanceGUID;
     if (this.isNewMode) {
-      this.changedValue['permission'] = {
+      changedValue['permission'] = {
         action: 'add', DESCR: this.mainForm.get('DESCRIPTION'),
         CREATED_BY: 'DH001', CREATE_TIME: '', CHANGE_BY: 'DH001', CHANGED_TIME: ''};
-      this.changedValue['r_role'] = {
+      changedValue['r_role'] = {
         action: 'add', NAME: this.mainForm.get('NAME'),
         DESCRIPTION: this.mainForm.get('DESCRIPTION')
       };
     }
 
-    this.changedValue['permission'] = {
+    changedValue['permission'] = {
       action: 'update', CHANGE_BY: 'DH001', CHANGED_TIME: ''};
 
     if (this.mainForm.get('DESCRIPTION').dirty) {
-      this.changedValue['permission']['DESCR'] = this.mainForm.get('DESCRIPTION');
-      this.changedValue['r_role'] = {
+      changedValue['permission']['DESCR'] = this.mainForm.get('DESCRIPTION');
+      changedValue['r_role'] = {
         action: 'update',  DESCRIPTION: this.mainForm.get('DESCRIPTION') };
     }
 
-    const appCategoryFormArray = this.mainForm.get('appCategories') as FormArray;
-    const relationship = this.uiMapperService.composeChangedRelationship(
-      'rs_system_role_category',
-      [{ENTITY_ID: 'category', ROLE_ID: 'app_category'}],
-      appCategoryFormArray,
-      this.originalValue['appCategories'],
-      ['NAME', 'ICON', 'apps']);
+    const categoryFormArray = this.mainForm.get('categories') as FormArray;
+    categoryFormArray.controls.forEach( ctrl => {
+      if (ctrl.get('ROW_TYPE').value === 'category') {
+        if (ctrl.get('RELATIONSHIP_INSTANCE_GUID').value) { // Change an existing profile
+          if (ctrl.get('profile.authorizations').pristine) { return; }
+          const originalProfile = this.originalValue['categories'].find(
+            category => category.RELATIONSHIP_INSTANCE_GUID === ctrl.get('RELATIONSHIP_INSTANCE_GUID').value);
+          this.operations.push({
+            action: 'changeInstance', noCommit: true,
+            instance: {
+              ENTITY_ID: 'authProfile',
+              INSTANCE_GUID: ctrl.get('auth_profile_INSTANCE_GUID').value,
+              authProfile: {action: 'update', CHANGED_BY: this.identityService.Session.USER_ID,
+                CHANGE_TIME: this.identityService.CurrentTime},
+              relationships: [
+                this.identityService.composeAuthChanges(<FormArray>ctrl.get('profile.authorizations'),
+                  originalProfile.authorizations, 'rs_auth_profile_object')
+              ]}
+          });
+        } else { // Add a new profile
+          this.operations.push({
+            action: 'createInstance', noCommit: true,
+            instance: {
+              ENTITY_ID: 'authProfile',
+              INSTANCE_GUID: ctrl.get('auth_profile_INSTANCE_GUID').value,
+              authProfile: {action: 'add', PROFILE_NAME: ctrl.get('profile.PROFILE_NAME').value,
+                DESC: ctrl.get('profile.DESC').value,
+                CREATED_BY: this.identityService.Session.USER_ID, CREATE_TIME: this.identityService.CurrentTime,
+                CHANGED_BY: this.identityService.Session.USER_ID, CHANGE_TIME: this.identityService.CurrentTime},
+              relationships: [
+                this.identityService.composeAuthChanges(<FormArray>ctrl.get('profile.authorizations'),
+                  [], 'rs_auth_profile_object')
+              ]
+            }
+          });
+        }
+      } else { // ROW_TYPE = app
+        ctrl.markAsPristine();
+      }
+    });
 
-    if (relationship) {this.changedValue['relationships'] = [relationship]; }
+    changedValue['relationships'] = [];
+    const rsCategory = this.uiMapperService.composeChangedRelationship(
+      'rs_role_category_profile',
+      [
+        {ENTITY_ID: 'category', ROLE_ID: 'app_category'},
+        {ENTITY_ID: 'authProfile', ROLE_ID: 'auth_profile'}],
+      categoryFormArray,
+      this.originalValue['categories'].filter( category => category.ROW_TYPE === 'category'),
+      ['CHECKED', 'COLLAPSED', 'ROW_TYPE', 'category', 'profile', 'app']);
+    if (rsCategory) { changedValue['relationships'].push(rsCategory); }
+
+    const newProfilesIndex = [];
+    this.operations.forEach( (operation, index) => {
+      if (operation.action === 'createInstance') { newProfilesIndex.push(index); }
+    });
+    this.operations.push({
+      action: this.isNewMode ? 'createInstance' : 'changeInstance', noCommit: true,
+      replacements: newProfilesIndex.map( idx => {
+        return {
+          movePath: [idx, 'result', 'instance', 'INSTANCE_GUID'],
+            toPath: ['relationships', 0, 'values', idx, 'PARTNER_INSTANCES', 1, 'INSTANCE_GUID']
+        };
+      }),
+      instance: changedValue
+    });
+
+    // Find the deleted categories, and also trigger the deletion of the corresponding profiles
+    this.originalValue['categories'].forEach( category => {
+      const idx = categoryFormArray.controls.findIndex(
+        ctrl => ctrl.get('RELATIONSHIP_INSTANCE_GUID').value === category.RELATIONSHIP_INSTANCE_GUID);
+      if (idx === -1) {
+        this.operations.push({
+          action: 'softDeleteInstanceByGUID',
+          instance: {INSTANCE_GUID: category.auth_profile_INSTANCE_GUID}
+        });
+        this.operations.push({
+          action: 'hardDeleteByGUID',
+          instance: {INSTANCE_GUID: category.auth_profile_INSTANCE_GUID}
+        });
+      }
+    });
 
     return true;
   }

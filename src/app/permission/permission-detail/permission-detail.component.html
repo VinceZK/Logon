@@ -50,6 +50,13 @@
   </ul>
 
   <div class="mt-2" [ngSwitch]="tabStrip">
-<!--    <app-user-basic *ngSwitchCase="1" [userForm]="userForm" [relationMetas]="relationMetas" [readonly]="readonly"></app-user-basic>-->
+    <app-permission-detail-category *ngSwitchCase="1" [mainForm]="mainForm" [readonly]="readonly">
+    </app-permission-detail-category>
+    <app-permission-detail-profile *ngSwitchCase="2" [mainForm]="mainForm"  [readonly]="readonly">
+    </app-permission-detail-profile>
+    <app-permission-detail-user *ngSwitchCase="3" [mainForm]="mainForm" [readonly]="readonly">
+    </app-permission-detail-user>
+    <app-admin-info *ngSwitchCase="4" [mainForm]="mainForm" [relationMetas]="relationMetas" [adminRelation]="'permission'">
+    </app-admin-info>
   </div>
 </div>

@@ -67,10 +67,10 @@ export class AuthObjectFieldComponent implements OnInit {
     }
   }
 
-  isExisting(authFieldForm: AbstractControl): boolean {
+  isExisting(key: AbstractControl): boolean {
     const existIndex = this.authFieldFormArray.controls.findIndex(
-      authField => authField.value.FIELD_NAME === authFieldForm.value.FIELD_NAME
-        && authField.pristine && authField.value.FIELD_NAME !== '');
+      ctrl => ctrl.value.FIELD_NAME === key.value.FIELD_NAME
+        && ctrl.pristine && ctrl.value.FIELD_NAME !== '');
     return existIndex !== -1 ;
   }
 

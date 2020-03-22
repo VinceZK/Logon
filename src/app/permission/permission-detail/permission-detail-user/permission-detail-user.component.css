@@ -1,0 +1,12 @@
+.dk-table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  border: none;
+}
+.dk-name{
+  width: 20rem;
+}
+.dk-icon{
+  width: 5rem;
+}

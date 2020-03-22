@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
-import {Operator, Option, SelectOption} from '../permssion';
+import {Operator, Option, SelectOption} from '../../permssion';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Attribute, AttributeBase, AttributeControlService, EntityService} from 'jor-angular';
 
@@ -33,7 +33,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
     this.fullPermission = false;
     this.attrCtrl = null;
     this.tabStrip = 1;
-    const authValues = this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').value;
+    const authValues = this.authFieldValueForm.get('AUTH_VALUE').value;
     this.entityService.getElementMeta(this.authFieldValueForm.get('DATA_ELEMENT').value)
       .subscribe( attrCtrl => {
         const attribute = <Attribute>attrCtrl;
@@ -120,13 +120,13 @@ export class AuthValueComponent implements OnInit, OnChanges {
     if (hasErrors) { return false; }
 
     if (authValues.length === 0) {
-      this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue('');
+      this.authFieldValueForm.get('AUTH_VALUE').setValue('');
       this.authFieldValueForm.get('STATUS').setValue('red');
     } else {
-      this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue(JSON.stringify(authValues, null, ' '));
+      this.authFieldValueForm.get('AUTH_VALUE').setValue(JSON.stringify(authValues, null, ' '));
       this.authFieldValueForm.get('STATUS').setValue('green');
     }
-    this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').markAsDirty();
+    this.authFieldValueForm.get('AUTH_VALUE').markAsDirty();
     return true;
   }
 
@@ -137,7 +137,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
   _setFullPermission(isFull: boolean): void {
     this.fullPermission = isFull;
     this.authFieldValueForm.get('STATUS').setValue(isFull ? 'green' : 'red');
-    this.authFieldValueForm.get('DEFAULT_AUTH_VALUE').setValue(isFull ? '"*"' : '');
+    this.authFieldValueForm.get('AUTH_VALUE').setValue(isFull ? '"*"' : '');
     if (isFull) {
       this.singleValueArray = this.fb.array([]);
       this.selectOptionArray = this.fb.array([]);

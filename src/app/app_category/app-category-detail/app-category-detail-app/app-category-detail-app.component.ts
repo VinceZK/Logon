@@ -68,10 +68,10 @@ export class AppCategoryDetailAppComponent implements OnInit {
     }
   }
 
-  isExisting(appForm: AbstractControl): boolean {
+  isExisting(key: AbstractControl): boolean {
     const existIndex = this.appFormArray.controls.findIndex(
-      app => app.value.APP_ID === appForm.value.APP_ID
-        && app.get('APP_ID').pristine && app.value.APP_ID !== '');
+      ctrl => ctrl.value.APP_ID === key.value.APP_ID
+        && ctrl.get('APP_ID').pristine && ctrl.value.APP_ID !== '');
     return existIndex !== -1 ;
   }
 

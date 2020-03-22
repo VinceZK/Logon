@@ -30,6 +30,16 @@ export class AuthObjList {
   INSTANCE_GUID: string;
 }
 
+export class AuthProfileList {
+  PROFILE_NAME: string;
+  DESC: string;
+  CREATED_BY: string;
+  CREATE_TIME: string;
+  CHANGED_BY: string;
+  CHANGE_TIME: string;
+  INSTANCE_GUID: string;
+}
+
 export class AppCategoryList {
   ID: string;
   ICON: string;
