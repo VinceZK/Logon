@@ -39,7 +39,7 @@ You can leverage the 3 parts separately or in combinations.
    ```
 4. Run your Angular project. Hopefully, you will see following UI:   
 
-![Logon Page](img/Logon.png)
+![Logon Page](img/logon.png)
 
 ### Change the Labels
 The title and labels in the UI component can be changed. You can either do it in this way:
@@ -97,7 +97,7 @@ At last, execute comment `npm install` and then `node server.js` to start the se
 ### Logon
 Access the URL: http://localhost:3000/logon. You use user name 'DH001' and password 'Dark1234' to logon. 
 
-![Logon Page](img/Logon.png)
+![Logon Page](img/logon.png)
 
 After successfully logon, you can check the session data in the landing page:
 
