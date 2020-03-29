@@ -136,7 +136,7 @@ so that afterwards, when the App is assigned to a Permission,
 the default authorizations will be brought to the Permission for easy maintenance. 
 ![Apps](img/App2.png)
 
-### App
+### App Category
 Access the URL: http://localhost:3000/app-categories.
 You create App categories to group relative Apps together as an assignment unit. 
 When an App category is assigned to a Permission, a corresponding Profile is also created. 
