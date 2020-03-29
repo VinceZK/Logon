@@ -101,8 +101,6 @@ Access the URL: http://localhost:3000/logon. You use user name 'DH001' and passw
 
 After successfully logon, you can check the session data in the landing page:
 
-![Landing Page](img/Landing.png)
-
 ### User
 Access the URL: http://localhost:3000/users. You can search users using using 'user ID' and 'user name'
 
@@ -155,6 +153,7 @@ The "ui-logon" is the server end of the identification management. It also lever
 + [PassportJS](http://www.passportjs.org/), 
 + [node-authorization](https://github.com/VinceZK/authorization), 
 + [JSON-On-Relations](https://github.com/VinceZK/json-on-relations).
+
 Check the `package.json` for other related modules. 
 
 "ui-logon" uses redis as the session store for PassportJS. So you have to install the redis server. 
