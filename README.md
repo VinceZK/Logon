@@ -1,5 +1,5 @@
 # UI-Logon
-An identification management solution implemented using using Angular, Express, Passport, node-authorization, and JSON-On-Relations. 
+An identification management solution implemented using Angular, Express, Passport, node-authorization, and JSON-On-Relations. 
 
 ## How to Use
 UI-Logon contains 3 parts: 
@@ -190,13 +190,12 @@ If they are equal, then attach the user information to the "identity" object.
 Besides the basic user information, the "identity" is also attached with authorization derived from the assigned permission. 
 It is then use [node-authorization](https://github.com/VinceZK/authorization) to utilize authorization checks. 
 
-You can write your own logon logic, and register it with "passport.use()" function, which will overwrite the default.
+You can write your own logon logic, and register it with "passport.use()" function.
  
 ### The Default Routes
-The default router is already registered with following routes. 
-You can further append your routes to it. 
-However, these routes will be protected by "Auth.ensureAuthenticated" 
-if it starts with '/api/' to prohibit the unauthorized accesses.
+The default router(`server/router.js`) is created as following. 
+`Auth.ensureAuthenticated` is used to protect endpoints that need to pass the authentication.
+You can import the default router into your route table `const router = require('ui-logon').Router`.
 ```javascript
 // Basic login with username & password
 router.post('/api/logon', Auth.logon);
@@ -208,8 +207,6 @@ router.all('/api/*', Auth.ensureAuthenticated);
 // Identity APIs
 router.get('/api/session', Auth.session);
 router.post('/api/renewPWD',Auth.renewPWD);
-
-module.exports = router;
 ``` 
 
 ## License
