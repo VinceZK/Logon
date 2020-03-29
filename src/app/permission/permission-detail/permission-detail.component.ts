@@ -293,29 +293,28 @@ export class PermissionDetailComponent implements OnInit {
     this.messageService.clearMessages();
     if (this._composeChanges()) {
       console.log(this.operations);
-      // this.identityService.orchestrate(this.operations).subscribe( results => {
-      //   this.operations = [];
-      //   results.forEach( result => {
-      //     if (result.errs) {
-      //       const errorMessages = <Message[]>result;
-      //       errorMessages.forEach( msg => this.messageService.add(msg));
-      //     } else if (result.instance && result.instance.ENTITY_ID === 'permission') {
-      //       this.instanceGUID = result.instance.INSTANCE_GUID;
-      //       this.isNewMode = false;
-      //       const permissionName = result.instance['r_role']['NAME'];
-      //       this.identityService.getPermissionDetail(permissionName).subscribe(instance => {
-      //         if ('ENTITY_ID' in instance) {
-      //           this._switch2DisplayMode();
-      //           this._resetValue(<Entity>instance);
-      //         } else {
-      //           const errorMessages = <Message[]>instance;
-      //           errorMessages.forEach( msg => this.messageService.add(msg));
-      //         }
-      //       });
-      //       this.messageService.reportMessage('PERMISSION', 'SAVED', 'S', permissionName);
-      //     }
-      //   });
-      // });
+      this.identityService.orchestrate(this.operations).subscribe( results => {
+        this.operations = [];
+        results.forEach( result => {
+          if (result.msgType) {
+            this.messageService.add(<Message>result);
+          } else if (result.instance && result.instance.ENTITY_ID === 'permission') {
+            this.instanceGUID = result.instance.INSTANCE_GUID;
+            this.isNewMode = false;
+            const permissionName = this.mainForm.get('NAME').value;
+            this.identityService.getPermissionDetail(permissionName).subscribe(instance => {
+              if ('ENTITY_ID' in instance) {
+                this._switch2DisplayMode();
+                this._resetValue(<Entity>instance);
+              } else {
+                const errorMessages = <Message[]>instance;
+                errorMessages.forEach( msg => this.messageService.add(msg));
+              }
+            });
+            this.messageService.reportMessage('PERMISSION', 'SAVED', 'S', permissionName);
+          }
+        });
+      });
     }
   }
 
@@ -336,7 +335,8 @@ export class PermissionDetailComponent implements OnInit {
     if (this.isNewMode) {
       changedValue['permission'] = {
         action: 'add', DESCR: this.mainForm.get('DESCRIPTION'),
-        CREATED_BY: 'DH001', CREATE_TIME: '', CHANGE_BY: 'DH001', CHANGED_TIME: ''};
+        CREATED_BY: this.identityService.Session.USER_ID, CREATE_TIME: this.identityService.CurrentTime,
+        CHANGED_BY: this.identityService.Session.USER_ID, CHANGE_TIME: this.identityService.CurrentTime};
       changedValue['r_role'] = {
         action: 'add', NAME: this.mainForm.get('NAME'),
         DESCRIPTION: this.mainForm.get('DESCRIPTION')
@@ -344,7 +344,7 @@ export class PermissionDetailComponent implements OnInit {
     }
 
     changedValue['permission'] = {
-      action: 'update', CHANGE_BY: 'DH001', CHANGED_TIME: ''};
+      action: 'update', CHANGED_BY: this.identityService.Session.USER_ID, CHANGE_TIME: this.identityService.CurrentTime};
 
     if (this.mainForm.get('DESCRIPTION').dirty) {
       changedValue['permission']['DESCR'] = this.mainForm.get('DESCRIPTION');
@@ -389,7 +389,7 @@ export class PermissionDetailComponent implements OnInit {
           });
         }
       } else { // ROW_TYPE = app
-        ctrl.markAsPristine();
+        ctrl.markAsPristine({onlySelf: true});
       }
     });
 
@@ -402,7 +402,12 @@ export class PermissionDetailComponent implements OnInit {
       categoryFormArray,
       this.originalValue['categories'].filter( category => category.ROW_TYPE === 'category'),
       ['CHECKED', 'COLLAPSED', 'ROW_TYPE', 'category', 'profile', 'app']);
-    if (rsCategory) { changedValue['relationships'].push(rsCategory); }
+    if (rsCategory) {
+      rsCategory['values'].forEach( value => {
+        if (value.PARTNER_INSTANCES) { value.PARTNER_INSTANCES[1].NO_EXISTING_CHECK = true; }
+      });
+      changedValue['relationships'].push(rsCategory);
+    }
 
     const newProfilesIndex = [];
     this.operations.forEach( (operation, index) => {
@@ -421,6 +426,7 @@ export class PermissionDetailComponent implements OnInit {
 
     // Find the deleted categories, and also trigger the deletion of the corresponding profiles
     this.originalValue['categories'].forEach( category => {
+      if (category.ROW_TYPE === 'app') { return; }
       const idx = categoryFormArray.controls.findIndex(
         ctrl => ctrl.get('RELATIONSHIP_INSTANCE_GUID').value === category.RELATIONSHIP_INSTANCE_GUID);
       if (idx === -1) {

@@ -1,0 +1,26 @@
+<form class="mt-4 ml-2 row">
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                          [attributeControl]="getAttrCtrlFromID('LANGUAGE')"
+                          [formGroup]="userPersonalizationForm"
+                          [readonly]="readonly"
+                          [isSmallSize]="true">
+  </dk-app-attribute-form2>
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                          [attributeControl]="getAttrCtrlFromID('TIMEZONE')"
+                          [formGroup]="userPersonalizationForm"
+                          [readonly]="readonly"
+                          [isSmallSize]="true">
+  </dk-app-attribute-form2>
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                          [attributeControl]="getAttrCtrlFromID('DECIMAL_FORMAT')"
+                          [formGroup]="userPersonalizationForm"
+                          [readonly]="readonly"
+                          [isSmallSize]="true">
+  </dk-app-attribute-form2>
+  <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                          [attributeControl]="getAttrCtrlFromID('DATE_FORMAT')"
+                          [formGroup]="userPersonalizationForm"
+                          [readonly]="readonly"
+                          [isSmallSize]="true">
+  </dk-app-attribute-form2>
+</form>

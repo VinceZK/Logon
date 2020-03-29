@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {AttributeBase, AttributeControlService, Entity, EntityService, RelationMeta, Relationship, UiMapperService} from 'jor-angular';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {DialogService} from '../../dialog.service';
@@ -7,8 +7,8 @@ import {IdentityService} from '../../identity.service';
 import {Message, MessageService} from 'ui-message-angular';
 import {switchMap} from 'rxjs/operators';
 import {forkJoin, Observable, of} from 'rxjs';
-import {existingAppCategoryValidator} from '../../async-validators';
-import {Authorization} from '../../permssion';
+import {existingProfileValidator} from '../../async-validators';
+import {Authorization} from '../../identity';
 
 @Component({
   selector: 'app-profile-detail',
@@ -118,7 +118,7 @@ export class ProfileDetailComponent implements OnInit {
     const profileNameCtrl = this.mainForm.get('PROFILE_NAME') as FormControl;
     if (this.isNewMode) {
       profileNameCtrl.setAsyncValidators(
-        existingAppCategoryValidator(this.identityService, this.messageService));
+        existingProfileValidator(this.identityService, this.messageService));
     }
 
     // Replace the URL from to display

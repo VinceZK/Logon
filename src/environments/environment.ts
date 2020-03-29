@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   redirectPath: '',
-  redirectUrl: '/landing',
+  redirectUrl: '/portal/external-app/PERMISSION',
   originalHost: 'http://localhost:3000'
 };
 

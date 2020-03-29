@@ -1,21 +1,33 @@
 # UI-Logon
 
-A user&password logon page using Angular, Express, Passport, node-authorization, and JSON-On-Relations. 
- 
+An identification management solution implemented using using Angular, Express, Passport, node-authorization, and JSON-On-Relations. 
+It contains following components:
++ Logon Module
 ![Logon Page](logon.png)
++ User Management
++ Permission Management
++ Define Profile
++ Define App
++ Define App Category 
++ Define Authorization Object
 
 ## How to Use
-UI-Logon has 2 parts: "ui-logon-angular" is the Angular side UI reusable component; 
-and "ui-logon" is for the NodeJS server side. You can leverage them separately, or both.
+UI-Logon contains 3 parts: 
 
-### The Angular Side
+1. "ui-logon-angular" is an Angular reusable component. You can use it to compose your logon page. 
+2. "Identification Management" contains various Apps which are used to maintain identification objects. 
+You can use these Apps to easily maintain users, permissions, profiles, authorization objects, and so on. 
+3. "ui-logon" is a NodeJS component which contains backend routes, authentication, and authorization logic. 
+
+You can leverage the 3 parts separately or in combinations.
+
+### UI-Logon-Angular
 1. Install it to your angular project:
    ```bash
     $ npm install ui-logon-angular --save
    ```
 2. In "app.module.ts", import the "LogonModule" from "ui-logon-angular":
    ```typescript
-   import ...;
    import {LogonModule} from 'ui-logon-angular';
 
    @NgModule({
@@ -36,6 +48,8 @@ and "ui-logon" is for the NodeJS server side. You can leverage them separately, 
    <dk-logon [redirectUrl]="'https://github.com/VinceZK/json-on-relations'"></dk-logon>
    ```
 4. Run your Angular project.   
+
+### Identification Apps
 
 ### The NodeJS Side
 The "ui-logon" server side is implemented in NodeJS, together with 

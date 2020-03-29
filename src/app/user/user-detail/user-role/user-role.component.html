@@ -1,0 +1,39 @@
+<table class="table table-sm table-bordered dk-table ml-3 mt-4" [formGroup]="userForm">
+  <thead class="thead-light dk-form-label">
+    <tr>
+      <th class="dk-name">Role</th>
+      <th class="dk-description">Description</th>
+      <th class="dk-actions">Action</th>
+    </tr>
+  </thead>
+
+  <tbody formArrayName="userRole" class="mb-4">
+    <tr *ngFor="let userRoleForm of userRoleFormArray.controls; let i = index">
+      <td [formGroup]="userRoleForm">
+        <div class="input-group">
+          <input class="form-control form-control-sm" type="text" formControlName="NAME" name="roleName"
+               [readonly]="readonly || oldRole(userRoleForm) && userRoleForm.valid" (change)="onChangeRoleID(i)">
+          <div class="invalid-tooltip">
+            {{userRoleForm.get('NAME').errors?.message}}
+          </div>
+          <div class="input-group-append">
+            <button class="btn btn-sm btn-outline-secondary btn-light" type="button" id="searchPermission"
+            (click)="onSearchHelp(i, userRoleForm)">
+              <span class="fas fa-search"></span>
+            </button>
+          </div>
+        </div>
+      </td>
+      <td [formGroup]="userRoleForm" >
+        <input type="text" formControlName="DESCRIPTION" readonly class="form-control form-control-sm">
+      </td>
+      <td>
+        <button class="btn btn-sm" type="button" id="delete" [disabled]="readonly" (click)="deleteRole(i)" title="Delete">
+          <span class="far fa-trash-alt"></span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<dk-app-search-help></dk-app-search-help>

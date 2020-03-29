@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import {RouterModule, Routes} from '@angular/router';
+import {RouteReuseStrategy, RouterModule, Routes} from '@angular/router';
 import {LogonComponent, LandingPageComponent} from 'ui-logon-angular';
 import {LogonModule} from 'ui-logon-angular';
 import {environment} from '../environments/environment';
@@ -34,6 +34,14 @@ import { ProfileDetailComponent } from './profile/profile-detail/profile-detail.
 import { PermissionDetailCategoryComponent } from './permission/permission-detail/permission-detail-category/permission-detail-category.component';
 import { PermissionDetailProfileComponent } from './permission/permission-detail/permission-detail-profile/permission-detail-profile.component';
 import { PermissionDetailUserComponent } from './permission/permission-detail/permission-detail-user/permission-detail-user.component';
+import {UserListComponent} from './user/user-list/user-list.component';
+import {UserDetailComponent} from './user/user-detail/user-detail.component';
+import {UserBasicComponent} from './user/user-detail/user-basic/user-basic.component';
+import {UserPersonalizationComponent} from './user/user-detail/user-personalization/user-personalization.component';
+import {UserRoleComponent} from './user/user-detail/user-role/user-role.component';
+import {UserEmailComponent} from './user/user-detail/user-email/user-email.component';
+import {UserAddressComponent} from './user/user-detail/user-address/user-address.component';
+import {CustomReuseStrategy} from './custom.reuse.strategy';
 
 const appRoutes: Routes = [
   {
@@ -44,6 +52,8 @@ const appRoutes: Routes = [
     }
   },
   { path: 'landing', component: LandingPageComponent },
+  { path: 'users', component: UserListComponent},
+  { path: 'users/:userID', component: UserDetailComponent, canDeactivate: [WorkProtectionGuard]},
   { path: 'apps', component: AppListComponent },
   { path: 'apps/:appID', component: AppDetailComponent, canDeactivate: [WorkProtectionGuard]},
   { path: 'app-categories', component: AppCategoryListComponent },
@@ -54,14 +64,19 @@ const appRoutes: Routes = [
   { path: 'permissions/:permissionName', component: PermissionDetailComponent, canDeactivate: [WorkProtectionGuard]},
   { path: 'profiles', component: ProfileListComponent },
   { path: 'profiles/:profileName', component: ProfileDetailComponent, canDeactivate: [WorkProtectionGuard]},
-  { path: '**', redirectTo: 'permissions', pathMatch: 'full'}
+  { path: '**', redirectTo: 'logon', pathMatch: 'full'}
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    PermissionListComponent,
-    PermissionDetailComponent,
+    UserListComponent,
+    UserDetailComponent,
+    UserBasicComponent,
+    UserPersonalizationComponent,
+    UserRoleComponent,
+    UserEmailComponent,
+    UserAddressComponent,
     AppListComponent,
     AppDetailComponent,
     AppTargetComponent,
@@ -80,6 +95,8 @@ const appRoutes: Routes = [
     AppCategoryDetailRoleComponent,
     ProfileListComponent,
     ProfileDetailComponent,
+    PermissionListComponent,
+    PermissionDetailComponent,
     PermissionDetailCategoryComponent,
     PermissionDetailProfileComponent,
     PermissionDetailUserComponent
@@ -93,7 +110,9 @@ const appRoutes: Routes = [
     MessageModule,
     JorAngularModule
   ],
-  providers: [],
+  providers: [
+    {provide: RouteReuseStrategy, useClass: CustomReuseStrategy}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

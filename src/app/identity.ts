@@ -8,6 +8,15 @@ export class PermissionList {
   INSTANCE_GUID: string;
 }
 
+export class UserList {
+  USER_ID: string;
+  USER_NAME: string;
+  DISPLAY_NAME: string;
+  LOCK: boolean;
+  PWD_STATE: string;
+  INSTANCE_GUID: string;
+}
+
 export class AppList {
   APP_ID: string;
   NAME: string;
@@ -50,21 +59,6 @@ export class AppCategoryList {
   CHANGED_BY: string;
   CHANGE_TIME: string;
   INSTANCE_GUID: string;
-}
-
-export class Session {
-  USER_ID: string;
-  USER_NAME?: string;
-  PWD_STATE?: number;
-  LOCK?: boolean;
-  DISPLAY_NAME?: string;
-  FAMILY_NAME?: string;
-  GIVEN_NAME?: string;
-  MIDDLE_NAME?: string;
-  DATE_FORMAT?: number;
-  DECIMAL_FORMAT?: number;
-  TIMEZONE?: string;
-  LANGUAGE?: string;
 }
 
 export class Authorization {

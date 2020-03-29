@@ -36,7 +36,7 @@
       </td>
       <td [formGroup]="categoryForm">
         <input class="form-control form-control-sm" type="number" formControlName="ORDER"
-               [readOnly]="categoryForm.get('ROW_TYPE').value === 'app'">
+               [readOnly]="categoryForm.get('ROW_TYPE').value === 'app' || readonly">
       </td>
       <td *ngIf="categoryForm.get('ROW_TYPE').value === 'category'" >{{categoryForm.get('category.NAME').value}}</td>
       <td *ngIf="categoryForm.get('ROW_TYPE').value === 'app'" >{{categoryForm.get('app.NAME').value}}</td>

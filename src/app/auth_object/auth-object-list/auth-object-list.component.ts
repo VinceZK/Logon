@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {AppList, AuthObjList} from '../../permssion';
+import {AppList, AuthObjList} from '../../identity';
 import {IdentityService} from '../../identity.service';
 import {Message, MessageService, messageType} from 'ui-message-angular';
 import {Router} from '@angular/router';

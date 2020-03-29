@@ -6,10 +6,10 @@ import {Entity, QueryObject, Relationship, UiMapperService} from 'jor-angular';
 import {Router} from '@angular/router';
 import {environment} from '../environments/environment';
 import {Message, MessageService, messageType} from 'ui-message-angular';
-import {msgStore} from './msgStore';
-import {AppCategoryList, AppList, AuthObjList, Authorization, AuthProfileList, PermissionList, Session} from './permssion';
+import {AppCategoryList, AppList, AuthObjList, Authorization, AuthProfileList, PermissionList, UserList} from './identity';
 import {formatDate} from '@angular/common';
 import {AbstractControl, FormArray} from '@angular/forms';
+import {Session} from 'ui-logon-angular';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -19,12 +19,12 @@ const httpOptions = {
 export class IdentityService {
   private originalHost = environment.originalHost;
   private session: Session;
+  private pseudoNodeID = 0;
 
   constructor(private http: HttpClient,
               private messageService: MessageService,
               private uiMapperService: UiMapperService,
               private router: Router) {
-    this.messageService.setMessageStore(msgStore, 'EN');
   }
 
   setSession( data: any ) {
@@ -42,6 +42,7 @@ export class IdentityService {
   get CurrentTime(): string {
     return formatDate( new Date(), 'yyyy-MM-dd hh:mm:ss', 'en-US' );
   }
+
   searchPermissions(permissionID: string, permissionDesc: string): Observable<PermissionList[] | Message[]> {
     const queryObject = new QueryObject();
     queryObject.ENTITY_ID = 'permission';
@@ -387,12 +388,91 @@ export class IdentityService {
 
   getAuthProfileByName(profileName: string): Observable<Entity | Message[]> {
     const pieceObject = {
-      ID: { RELATION_ID: 'authProfile', ID: profileName},
+      ID: { RELATION_ID: 'authProfile', PROFILE_NAME: profileName},
       piece: {RELATIONS: ['authProfile']}
     };
     return this.http.post<Entity | Message[]>(
       this.originalHost + `/api/entity/instance/piece`, pieceObject, httpOptions).pipe(
       catchError(this.handleError<any>('getAuthProfileByName')));
+  }
+
+  searchUsers(userID: string, userName: string): Observable<UserList[] | Message[]> {
+    const queryObject = new QueryObject();
+    queryObject.ENTITY_ID = 'person';
+    queryObject.RELATION_ID = 'r_user';
+    queryObject.PROJECTION = ['USER_ID', 'USER_NAME', 'DISPLAY_NAME', 'LOCK', 'PWD_STATE'];
+    queryObject.FILTER = [];
+    if (userID) {
+      if (userID.includes('*') || userID.includes('%')) {
+        queryObject.FILTER.push({FIELD_NAME: 'USER_ID', OPERATOR: 'CN', LOW: userID});
+      } else {
+        queryObject.FILTER.push({FIELD_NAME: 'USER_ID', OPERATOR: 'EQ', LOW: userID});
+      }
+    }
+    if (userName) {
+      if (userName.includes('*')) {
+        userName = userName.replace(/\*/gi, '%');
+        queryObject.FILTER.push({FIELD_NAME: 'USER_NAME', OPERATOR: 'CN', LOW: userName});
+      } else {
+        queryObject.FILTER.push({FIELD_NAME: 'USER_NAME', OPERATOR: 'EQ', LOW: userName});
+      }
+    }
+    queryObject.SORT = ['USER_ID'];
+    return this.http.post<any>(this.originalHost + `/api/query`, queryObject, httpOptions).pipe(
+      catchError(this.handleError<any>('searchObjects')));
+  }
+
+  getUserDetail(userID: string): Observable<Entity | Message[]> {
+    const pieceObject = {
+      ID: { RELATION_ID: 'r_user', USER_ID: userID},
+      piece: {RELATIONS: ['r_user', 'r_employee', 'r_email', 'r_address', 'r_personalization'],
+        RELATIONSHIPS: [
+          {
+            RELATIONSHIP_ID: 'rs_user_role',
+            PARTNER_ENTITY_PIECES: { RELATIONS: ['r_role'] }
+          }]
+      }
+    };
+    return this.http.post<Entity | Message[]>(
+      this.originalHost + `/api/entity/instance/piece`, pieceObject, httpOptions).pipe(
+      catchError(this.handleError<any>('getUserDetail')));
+  }
+
+  getUserByUserID(userID: string): Observable<Entity | Message[]> {
+    const pieceObject = {
+      ID: { RELATION_ID: 'r_user', USER_ID: userID},
+      piece: {RELATIONS: ['r_user']}
+    };
+    return this.http.post<Entity | Message[]>(
+      this.originalHost + `/api/entity/instance/piece`, pieceObject, httpOptions).pipe(
+      catchError(this.handleError<any>('getUserByUserID')));
+  }
+
+  getUserByUserName(userName: string): Observable<Entity | Message[]> {
+    const pieceObject = {
+      ID: { RELATION_ID: 'r_user', USER_NAME: userName},
+      piece: {RELATIONS: ['r_user']}
+    };
+    return this.http.post<Entity | Message[]>(
+      this.originalHost + `/api/entity/instance/piece`, pieceObject, httpOptions).pipe(
+      catchError(this.handleError<any>('getUserByUserName')));
+  }
+
+  getRoleDesc(roleID: string): Observable<{}> {
+    const pieceObject = {
+      ID: { RELATION_ID: 'r_role', NAME: roleID},
+      piece: {RELATIONS: ['r_role']}
+    };
+    return this.http.post<{}>(
+      this.originalHost + `/api/entity/instance/piece`, pieceObject, httpOptions).pipe(
+      map(instance => {
+        return 'INSTANCE_GUID' in instance ?
+          {
+            INSTANCE_GUID: instance['INSTANCE_GUID'],
+            DESCRIPTION: instance['r_role'] ? instance['r_role'][0]['DESCRIPTION'] : ''
+          } : instance[0];
+      }),
+      catchError(this.handleError<any>('getRoleDesc')));
   }
 
   orchestrate(operations: any): any {
@@ -419,8 +499,9 @@ export class IdentityService {
     );
   }
 
-  parseProfileAuthObject( relationship: Relationship): any {
+  parseProfileAuthObject(relationship: Relationship): any {
     const authorizations = [];
+    if (!relationship) { return authorizations; }
     relationship.values.forEach( value => {
       const authorization = value['AUTH_VALUE'] ?
         <Authorization>JSON.parse(value['AUTH_VALUE']) : null;
@@ -430,7 +511,7 @@ export class IdentityService {
       authorizations.push({
         CHECKED: '',
         COLLAPSED: false,
-        NODE_ID: value['RELATIONSHIP_INSTANCE_GUID'],
+        NODE_ID: value['RELATIONSHIP_INSTANCE_GUID'] || ++this.pseudoNodeID,
         STATUS: status,
         RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
         auth_object_INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
@@ -448,7 +529,7 @@ export class IdentityService {
         authorizations.push({
           CHECKED: '',
           COLLAPSED: false,
-          NODE_ID: value['RELATIONSHIP_INSTANCE_GUID'],
+          NODE_ID: value['RELATIONSHIP_INSTANCE_GUID'] || this.pseudoNodeID,
           STATUS: authorization.AuthFieldValue[authFieldName] ?
             authorization.AuthFieldValue[authFieldName].length > 0 ? 'green' : 'red' : 'red',
           RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],

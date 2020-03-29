@@ -4,7 +4,7 @@
     "AuthFieldValue": {
       "ENTITY_ID": ["person"],
       "RELATION_ID": "*",
-      "Action": ["READ"]
+      "ACTION": ["READ"]
     }
   }
 ]

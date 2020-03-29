@@ -9,20 +9,22 @@ defaultUserAddIns.beforeEntityQuery.use('*', checkQueryPermission);
 defaultUserAddIns.afterEntityReading.use('*', checkReadPermission);
 
 function checkQueryPermission(req, callback) {
-  if(!req.user.Authorization.check('entity',
-    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: req.body['RELATION_ID'], Action: 'READ'}))
+  if(!req.user.Authorization.check('ENTITY',
+    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: req.body['RELATION_ID'], ACTION: 'READ'}))
   {
-    callback([message.reportShortText('PERMISSION', 'QUERY_PERMISSION', 'E', req.body['ENTITY_ID'], req.body['RELATION_ID'])]);
+    callback([message.reportShortText('PERMISSION', 'QUERY_PERMISSION', 'E',
+      req.body['ENTITY_ID'], req.body['RELATION_ID'])]);
   } else {
     callback(null);
   }
 }
 
 function checkReadPermission(req, callback) {
-  if(!req.user.Authorization.check('entity',
-    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: '*', Action: 'READ'}))
+  if(!req.user.Authorization.check('ENTITY',
+    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: '*', ACTION: 'READ'}))
   {
-    callback([message.reportShortText('PERMISSION', 'READ_PERMISSION', 'E', req.body['ENTITY_ID'])]);
+    callback([message.reportShortText('PERMISSION', 'READ_PERMISSION', 'E',
+      req.body['ENTITY_ID'])]);
   } else {
     callback(null, req.body);
   }

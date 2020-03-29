@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {PermissionList} from '../../permssion';
+import {PermissionList} from '../../identity';
 import {Message, MessageService, messageType} from 'ui-message-angular';
 import {IdentityService} from '../../identity.service';
 import {Router} from '@angular/router';

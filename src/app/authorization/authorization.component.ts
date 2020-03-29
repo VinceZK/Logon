@@ -40,6 +40,7 @@ export class AuthorizationComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
+    if (!this.mainForm) { return; }
     this.authObjFormArray = <FormArray>this.mainForm.get(this.ctrlName);
     this.authObjFormArray.controls.forEach( ctrl => {
       if (ctrl.get('ROW_TYPE').value === 'FIELD') { ctrl.get('CHECKED').disable(); }

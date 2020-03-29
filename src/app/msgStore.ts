@@ -38,6 +38,45 @@ export const msgStore = [
       }
     }
   },
+  { msgCat: 'USER',
+    msgName: 'INVALID',
+    msgText: {
+      EN: {shortText: 'Data is invalid, please check.',
+        longText: 'The data still contains some errors, please make sure all mandatory fields are filled!'}
+    }
+  },
+  { msgCat: 'USER',
+    msgName: 'USER_NAME_EXISTS',
+    msgText: {
+      EN: {shortText: 'User name: \'%s\' already exists!',
+        longText: ''}
+    }
+  },
+  { msgCat: 'USER',
+    msgName: 'USER_ID_EXISTS',
+    msgText: {
+      EN: {shortText: 'User ID: \'%s\' already exists!',
+        longText: ''}
+    }
+  },
+  { msgCat: 'USER',
+    msgName: 'AT_LEAST_ONE_EMAIL',
+    msgText: {
+      EN: {
+        shortText: 'At least one email needs to be maintained!',
+        longText: ''
+      }
+    }
+  },
+  { msgCat: 'USER',
+    msgName: 'USER_SAVED',
+    msgText: {
+      EN: {
+        shortText: 'User \'%s\' is saved!',
+        longText: ''
+      }
+    }
+  },
   { msgCat: 'PERMISSION',
     msgName: 'PERMISSION_EXISTS',
     msgText: {

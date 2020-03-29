@@ -8,7 +8,7 @@ import {Message, MessageService} from 'ui-message-angular';
 import {switchMap} from 'rxjs/operators';
 import {forkJoin, Observable, of} from 'rxjs';
 import {existingAppValidator} from '../../async-validators';
-import {Authorization} from '../../permssion';
+import {Authorization} from '../../identity';
 
 @Component({
   selector: 'app-app-detail',

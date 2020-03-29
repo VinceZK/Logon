@@ -5,7 +5,8 @@
   <button type="button" id="new" class="btn btn-light btn-sm" (click)="add()" [disabled]="readonly">
     <span class="fas fa-plus"></span> Add</button>
 </div>
-<table class="table table-bordered table-sm dk-table" [formGroup]="mainForm">
+<table *ngIf="mainForm"
+  class="table table-bordered table-sm dk-table" [formGroup]="mainForm">
   <thead class="thead-light">
   <tr>
     <th class="dk-checkbox"><input name="btSelectAll" type="checkbox" (click)="checkAll()"></th>

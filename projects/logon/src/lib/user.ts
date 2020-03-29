@@ -46,3 +46,18 @@ export class Sort {
   RELATION_ID: string;
   ORDER: string;
 }
+
+export class Session {
+  USER_ID: string;
+  USER_NAME?: string;
+  PWD_STATE?: number;
+  LOCK?: boolean;
+  DISPLAY_NAME?: string;
+  FAMILY_NAME?: string;
+  GIVEN_NAME?: string;
+  MIDDLE_NAME?: string;
+  DATE_FORMAT?: number;
+  DECIMAL_FORMAT?: number;
+  TIMEZONE?: string;
+  LANGUAGE?: string;
+}

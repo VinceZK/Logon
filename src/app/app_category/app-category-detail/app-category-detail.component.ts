@@ -283,17 +283,24 @@ export class AppCategoryDetailComponent implements OnInit {
 
     if (this.isNewMode) {
       this.changedValue['category'] = {
-        action: 'add', ID: this.mainForm.get('ID').value,
+        action: 'add', TYPE: 'APP',
         CREATED_BY: this.identityService.Session.USER_ID, CREATE_TIME: this.identityService.CurrentTime,
-        CHANGED_BY: this.identityService.Session.USER_ID, CHANGE_TIME: this.identityService.CurrentTime};
+        CHANGED_BY: this.identityService.Session.USER_ID, CHANGE_TIME: this.identityService.CurrentTime
+      };
+      this.changedValue['r_app_category'] = { action: 'add', ID: this.mainForm.get('ID').value };
     } else {
       this.changedValue['category'] = {
         action: 'update', CHANGED_BY: this.identityService.Session.USER_ID, CHANGE_TIME: this.identityService.CurrentTime};
+      this.changedValue['r_app_category'] = { action: 'update', ID: this.mainForm.get('ID').value};
     }
 
     if (this.mainForm.get('NAME').dirty) {
       this.changedValue['category']['NAME'] = this.mainForm.get('NAME').value;
       this.changedValue['r_app_category']['NAME'] = this.mainForm.get('NAME').value;
+    }
+
+    if (this.mainForm.get('ICON').dirty) {
+      this.changedValue['r_app_category']['ICON'] = this.mainForm.get('ICON').value;
     }
 
     const appFormArray = this.mainForm.get('apps') as FormArray;

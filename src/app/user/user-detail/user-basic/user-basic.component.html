@@ -1,0 +1,70 @@
+<div class="card mt-4">
+  <div class="card-header">Name</div>
+  <div class="card-body">
+    <form class="mt-2 row">
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('USER_NAME')"
+                              [formGroup]="userBasicNamesForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('DISPLAY_NAME')"
+                              [formGroup]="userBasicNamesForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+      <div class="col-md-4"></div>
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('GIVEN_NAME')"
+                              [formGroup]="userBasicNamesForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('MIDDLE_NAME')"
+                              [formGroup]="userBasicNamesForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('FAMILY_NAME')"
+                              [formGroup]="userBasicNamesForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+    </form>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">Employee</div>
+  <div class="card-body">
+    <form class="mt-2 row">
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('COMPANY_ID')"
+                              [formGroup]="userBasicEmployeeForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('DEPARTMENT_ID')"
+                              [formGroup]="userBasicEmployeeForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('TITLE')"
+                              [formGroup]="userBasicEmployeeForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+      <dk-app-attribute-form2 class="col-md-6 col-lg-4"
+                              [attributeControl]="getAttrCtrlFromID('GENDER')"
+                              [formGroup]="userBasicEmployeeForm"
+                              [readonly]="readonly"
+                              [isSmallSize]="true">
+      </dk-app-attribute-form2>
+    </form>
+  </div>
+</div>

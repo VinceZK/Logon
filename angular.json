@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "permission": {
+    "identification": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -14,7 +14,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
-            "outputPath": "dist/PermissionApp",
+            "outputPath": "dist/identification",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -58,18 +58,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "permission:build"
+            "browserTarget": "identification:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "permission:build:production"
+              "browserTarget": "identification:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "permission:build"
+            "browserTarget": "identification:build"
           }
         },
         "test": {
@@ -103,7 +103,7 @@
         }
       }
     },
-    "permission-e2e": {
+    "identification-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -111,7 +111,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "permission:serve"
+            "devServerTarget": "identification:serve"
           }
         },
         "lint": {
@@ -167,5 +167,5 @@
       }
     }
   },
-  "defaultProject": "permission"
+  "defaultProject": "identification"
 }

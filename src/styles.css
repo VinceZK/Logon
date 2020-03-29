@@ -32,6 +32,13 @@ select.ng-invalid{
   min-width: 7rem;
   max-width: 7rem;
 }
+.dk-fixed-top {
+  position: relative;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 500;
+}
 .treegrid-expander-expanded {
   background-image: url(assets/img/expended.png);
 }

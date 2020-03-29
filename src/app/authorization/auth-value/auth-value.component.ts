@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit} from '@angular/core';
-import {Operator, Option, SelectOption} from '../../permssion';
+import {Operator, Option, SelectOption} from '../../identity';
 import {FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {Attribute, AttributeBase, AttributeControlService, EntityService} from 'jor-angular';
 
@@ -97,6 +97,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
 
   generateAuthValue(): boolean {
     if (!this.singleValueArray.dirty && !this.selectOptionArray.dirty) { return true; }
+    if (this.fullPermission) { return true; }
     const authValues = [];
     let hasErrors = false;
     this.singleValueArray.controls.forEach( singleValueCtrl => {
@@ -132,6 +133,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
 
   checkFullPermission(): void {
     this._setFullPermission(!this.fullPermission);
+    this.authFieldValueForm.get('AUTH_VALUE').markAsDirty();
   }
 
   _setFullPermission(isFull: boolean): void {

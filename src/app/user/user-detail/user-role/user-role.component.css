@@ -1,0 +1,15 @@
+.dk-table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+  border: none;
+}
+.dk-name{
+  width: 20rem;
+}
+.dk-description{
+  width: 30rem;
+}
+.dk-actions{
+  width: 3rem;
+}
