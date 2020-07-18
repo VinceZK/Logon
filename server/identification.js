@@ -12,7 +12,6 @@ module.exports = {
   Authorization: Authorization,
   Authentication: function (jor) {
     const entity = jor.Entity;
-    Authorization.switchTraceOn();
     /**
      * Implement the local strategy by accessing the MDB
      */
