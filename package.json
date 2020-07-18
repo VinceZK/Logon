@@ -1,6 +1,6 @@
 {
   "name": "ui-logon",
-  "version": "1.2.3",
+  "version": "1.2.8",
   "description": "A logon page in Angular and Node",
   "scripts": {
     "ng": "ng",
@@ -34,8 +34,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
-    "jor-angular": "^3.1.9",
-    "json-on-relations": "3.1.5",
+    "jor-angular": "^3.1.13",
+    "json-on-relations": "3.1.8",
     "node-authorization": "2.0.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

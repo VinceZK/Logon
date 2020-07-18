@@ -23,7 +23,7 @@ export class AppCategoryDetailRoleComponent implements OnInit {
   }
 
   onSearchHelp(rowID: number, exportObject: AbstractControl): void {
-    this.searchHelpComponent.openSearchHelpModalByEntity('permission', 'r_role',
-      exportObject, true, null, null, null);
+    this.searchHelpComponent.openSearchHelpBySearchHelp('ROLE', 'NAME',
+      'NAME', exportObject, true, null);
   }
 }

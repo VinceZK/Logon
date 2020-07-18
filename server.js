@@ -39,7 +39,7 @@ router.get('/*', (req, res) => { // Ensure refreshing into index.html
 app.use('/', router);
 
 // Load Authentication
-require('./server/Authentication')(jor);
+require('./server/identification').Authentication(jor);
 require('./server/controller/permission_ctrl');
 
 // Set the port and bootstrap

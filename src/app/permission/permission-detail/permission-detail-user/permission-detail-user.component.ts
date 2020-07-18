@@ -26,7 +26,7 @@ export class PermissionDetailUserComponent implements OnInit {
       return () => context.onChangeKey(rowIDx);
     }(this, rowID).bind(this);
 
-    this.searchHelpComponent.openSearchHelpModalByEntity('person', 'r_user',
-      exportObject, this.readonly, null, null, afterExportFn);
+    this.searchHelpComponent.openSearchHelpBySearchHelp('USER', 'USER_ID',
+      'USER_ID', exportObject, this.readonly, afterExportFn);
   }
 }

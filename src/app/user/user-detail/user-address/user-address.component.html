@@ -18,10 +18,10 @@
                                 [readonly]="readonly"
                                 [isSmallSize]="true">
         </dk-app-attribute-form2>
-        <div class="col-1 row form-group mr-2">
-          <label for="primaryAddress" class="col-form-label col-form-label-sm">Primary</label>
-          <input type="radio" class="form-control form-control-sm" id="primaryAddress" [value]="1"
+        <div class="col-1 row form-group mr-2 form-check">
+          <input type="radio"  id="primaryAddress" [value]="1" class="form-check-input"
                  name="PRIMARY" formControlName="PRIMARY">
+          <label for="primaryAddress" class="form-check-label">Primary</label>
         </div>
         <dk-app-attribute-form2 class="col-md-3"
                                 [attributeControl]="getAttrCtrlFromID('POSTCODE')"

@@ -81,6 +81,6 @@ export class AppCategoryDetailAppComponent implements OnInit {
     }(this, rowID).bind(this);
 
     this.searchHelpComponent.openSearchHelpModalByEntity('app', 'app',
-      exportObject, this.readonly, 'APP_ID', null, afterExportFn);
+      exportObject, this.readonly, 'APP_ID', 'APP_ID', afterExportFn);
   }
 }

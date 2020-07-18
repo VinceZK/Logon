@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup} from "@angular/forms";
-import {IdentityService} from "../../../identity.service";
-import {SearchHelpComponent} from "jor-angular";
+import {AbstractControl, FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {IdentityService} from '../../../identity.service';
+import {SearchHelpComponent} from 'jor-angular';
 
 @Component({
   selector: 'app-user-role',
@@ -78,8 +78,8 @@ export class UserRoleComponent implements OnInit {
       return () => context.onChangeRoleID(ruleIdx);
     }(this, rowID).bind(this);
 
-    this.searchHelpComponent.openSearchHelpModalByEntity('permission', 'r_role',
-      exportObject, this.readonly, null, null, afterExportFn);
+    this.searchHelpComponent.openSearchHelpBySearchHelp('ROLE', 'NAME',
+      'NAME', exportObject, this.readonly, afterExportFn);
   }
 
 }

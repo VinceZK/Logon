@@ -10,7 +10,7 @@ defaultUserAddIns.afterEntityReading.use('*', checkReadPermission);
 
 function checkQueryPermission(req, callback) {
   if(!req.user.Authorization.check('ENTITY',
-    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: req.body['RELATION_ID'], ACTION: 'READ'}))
+    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: req.body['RELATION_ID'], ACTION: 'DISPLAY'}))
   {
     callback([message.reportShortText('PERMISSION', 'QUERY_PERMISSION', 'E',
       req.body['ENTITY_ID'], req.body['RELATION_ID'])]);
@@ -21,7 +21,7 @@ function checkQueryPermission(req, callback) {
 
 function checkReadPermission(req, callback) {
   if(!req.user.Authorization.check('ENTITY',
-    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: '*', ACTION: 'READ'}))
+    {ENTITY_ID: req.body['ENTITY_ID'], RELATION_ID: '*', ACTION: 'DISPLAY'}))
   {
     callback([message.reportShortText('PERMISSION', 'READ_PERMISSION', 'E',
       req.body['ENTITY_ID'])]);
