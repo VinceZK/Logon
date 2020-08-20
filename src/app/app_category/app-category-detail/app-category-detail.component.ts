@@ -188,7 +188,7 @@ export class AppCategoryDetailComponent implements OnInit {
         case 'rs_app_category':
           __parseApp(relationship);
           break;
-        case 'rs_system_role_category':
+        case 'rs_role_category_profile':
           __parseSystemRole(relationship);
           break;
         default:
@@ -211,11 +211,12 @@ export class AppCategoryDetailComponent implements OnInit {
 
     function __parseSystemRole( relationship: Relationship): void {
       relationship.values.forEach( value => {
+        const permission = value['PARTNER_INSTANCES'].find( partner => partner.ENTITY_ID === 'permission');
         parsedRelationship.roles.push({
           RELATIONSHIP_INSTANCE_GUID: value['RELATIONSHIP_INSTANCE_GUID'],
-          system_role_INSTANCE_GUID: value['PARTNER_INSTANCES'][0]['INSTANCE_GUID'],
-          NAME: value['PARTNER_INSTANCES'][0]['r_role'][0]['NAME'],
-          DESCRIPTION: value['PARTNER_INSTANCES'][0]['r_role'][0]['DESCRIPTION'],
+          system_role_INSTANCE_GUID: permission.INSTANCE_GUID,
+          NAME: permission.r_role[0].NAME,
+          DESCRIPTION: permission.r_role[0].DESCRIPTION,
           ORDER: value['ORDER']
         });
       });

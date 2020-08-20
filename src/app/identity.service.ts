@@ -68,7 +68,7 @@ export class IdentityService {
         queryObject.FILTER.push({FIELD_NAME: 'DESCRIPTION', OPERATOR: 'EQ', LOW: permissionDesc});
       }
     }
-    queryObject.SORT = ['NAME'];
+    queryObject.SORT = [{FIELD_NAME: 'CHANGE_TIME', RELATION_ID: 'permission', ORDER: 'DESC'}];
     return this.http.post<any>(this.originalHost + `/api/query`, queryObject, httpOptions).pipe(
       catchError(this.handleError<any>('searchObjects')));
   }
@@ -136,7 +136,7 @@ export class IdentityService {
         queryObject.FILTER.push({FIELD_NAME: 'NAME', OPERATOR: 'EQ', LOW: appName});
       }
     }
-    queryObject.SORT = ['APP_ID'];
+    queryObject.SORT = [{FIELD_NAME: 'CHANGE_TIME', ORDER: 'DESC'}];
     return this.http.post<any>(this.originalHost + `/api/query`, queryObject, httpOptions).pipe(
       catchError(this.handleError<any>('searchObjects')));
   }
@@ -220,7 +220,7 @@ export class IdentityService {
         queryObject.FILTER.push({FIELD_NAME: 'DESC', OPERATOR: 'EQ', LOW: authObjDesc});
       }
     }
-    queryObject.SORT = ['OBJ_NAME'];
+    queryObject.SORT = [{FIELD_NAME: 'CHANGE_TIME', ORDER: 'DESC'}];
     return this.http.post<any>(this.originalHost + `/api/query`, queryObject, httpOptions).pipe(
       catchError(this.handleError<any>('searchAuthObjects')));
   }
@@ -297,7 +297,7 @@ export class IdentityService {
       }
     }
     queryObject.FILTER.push({RELATION_ID: 'category', FIELD_NAME: 'TYPE', OPERATOR: 'EQ', LOW: 'APP'});
-    queryObject.SORT = ['ID'];
+    queryObject.SORT = [{FIELD_NAME: 'CHANGE_TIME', RELATION_ID: 'category', ORDER: 'DESC'}];
     return this.http.post<any>(this.originalHost + `/api/query`, queryObject, httpOptions).pipe(
       catchError(this.handleError<any>('searchAppCategories')));
   }
@@ -313,9 +313,14 @@ export class IdentityService {
             PARTNER_ENTITY_PIECES: { RELATIONS: ['app'] }
           },
           {
-            RELATIONSHIP_ID: 'rs_system_role_category',
-            PARTNER_ENTITY_PIECES: { RELATIONS: ['r_role'] }
-          },
+            RELATIONSHIP_ID: 'rs_role_category_profile',
+            PARTNER_ENTITY_PIECES: [
+              {
+                ENTITY_ID: 'permission',
+                piece: { RELATIONS: ['r_role']}
+              }
+            ]
+          }
         ]
       }
     };
@@ -355,7 +360,7 @@ export class IdentityService {
         queryObject.FILTER.push({FIELD_NAME: 'DESC', OPERATOR: 'EQ', LOW: profileDesc});
       }
     }
-    queryObject.SORT = ['PROFILE_NAME'];
+    queryObject.SORT = [{FIELD_NAME: 'CHANGE_TIME', ORDER: 'DESC'}];
     return this.http.post<any>(this.originalHost + `/api/query`, queryObject, httpOptions).pipe(
       catchError(this.handleError<any>('searchAuthProfiles')));
   }

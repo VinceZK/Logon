@@ -5,9 +5,9 @@ An identification management solution implemented using Angular, Express, Passpo
 UI-Logon contains 3 parts: 
 
 1. "ui-logon-angular" is an Angular reusable component. You can use it to compose your logon page. 
-2. "Identification Apps" contains various Apps which are used to maintain identification objects. 
-You can use these Apps to easily maintain users, permissions, profiles, authorization objects, and so on. 
-3. "ui-logon" is a NodeJS component which contains backend routes, authentication, and authorization logic. 
+2. "Identification Apps" contains various Apps which are used to maintain identification objects, 
+which may include users, permissions, profiles, app, app category, and authorization objects. 
+3. "ui-logon" is a NodeJS component which contains backend logic, like routes, authentication, and authorization. 
 
 You can leverage the 3 parts separately or in combinations.
 
@@ -62,17 +62,16 @@ const appRoutes: Routes = [
   { path: '**', redirectTo: 'logon', pathMatch: 'full'}
 ];
 ```
-You can find another difference of the above 2 approaches. The second one uses Angular Route to do the redirection.
-Thus you use attribute "redirectPath" instead of "redirectUrl", which will redirect to a Angular component.
+The second approach allows you to redirect to an Angular component. 
 
 ## Identification Apps
 After git clone this project, following Angular Apps are in the folder `/src/app`:
-1. Manage Users  --> `user`
-2. Define Permission --> `permission`
-3. Define Authorization Profile --> `profile`
-4. Define App --> `app`
-5. Define App Category --> `app_category`
-6. Define Authorization Object --> `auth_object`
+1. Manage Users  --> `/user`
+2. Define Permission --> `/permission`
+3. Define Authorization Profile --> `/profile`
+4. Define App --> `/app`
+5. Define App Category --> `/app_category`
+6. Define Authorization Object --> `/auth_object`
 
 You run the command `ng build` in the project root to generate the static runnable in `dist/identification`.
 In the NodeJS initiative file `server.js`, you can find following statements are used to expose the runnable 
@@ -92,7 +91,7 @@ app.get('/logon', (req, res) => { // Open the logon page
 To run the Apps, you need to install MySQLs(5.6) and [Redis](https://redis.io/topics/quickstart).
 You should also refer [JSON-On-Relations](https://github.com/VinceZK/json-on-relations) to populate the data into MySQL instance.
 
-At last, execute comment `npm install` and then `node server.js` to start the server. 
+At last, execute command `npm install` and then `node server.js` to start the server. 
  
 ### Logon
 Access the URL: http://localhost:3000/logon. You use user name 'DH001' and password 'Dark1234' to logon. 
@@ -112,32 +111,34 @@ You can assign roles(permission) to a user:
 
 ### Permission
 Access the URL: http://localhost:3000/permissions.
-Permission(role) is maintained by first assigning App categories. 
+Permission is equivalent to role, and can be assigned to a user. 
+Permission is maintained by first assigning App categories. 
 ![Permission App Categories](img/Permission1.png)
 
-Profiles will be generated per app category. In the profile, you then maintain detail authorizations for each profile: 
+Profiles are then generated per app category. In the profile, you can maintain detail authorizations: 
 ![Permission Authorization Profiles](img/Permission2.png)
 
 ### Profile
 Access the URL: http://localhost:3000/profiles.
-Profiles can be created or maintained directly. This is useful when you want to grant technique users(for background jobs or APIs)
-permissions. Because those technique users usually do not need UI access. 
+Profiles are either generated during the permission creation, or manually created. 
+The manual created ones can be directly assigned to technique users who don't require UI access, 
+like background job users or communication users.
 ![Profiles](img/Profile.png)
 
 ### App
 Access the URL: http://localhost:3000/apps.
-You can register an App in the system.
+You can register Apps in the system. An App is registered by giving an URL, either an absolute one or a relative one. 
 ![Apps](img/App1.png)
 
-And you can also maintain default authorizations for the App, 
-so that afterwards, when the App is assigned to a Permission, 
-the default authorizations will be brought to the Permission for easy maintenance. 
+You can also maintain default authorizations for the App.
+This is very helpful when the App is assigned to a Permission through an App category.
+The default authorizations will be brought to the Permission for easy maintenance. 
 ![Apps](img/App2.png)
 
 ### App Category
 Access the URL: http://localhost:3000/app-categories.
 You create App categories to group relative Apps together as an assignment unit. 
-When an App category is assigned to a Permission, a corresponding Profile is also created. 
+When an App category is assigned to a Permission, a corresponding Profile is generated. 
 ![Apps](img/AppCategory.png)
 
 ### Authorization Object
@@ -148,7 +149,9 @@ It contains authorization fields to compose the authorization schema and value.
 ![Apps](img/AuthObject.png)
 
 ## UI-Logon
-The "ui-logon" is the server end of the identification management. It also leverages following modules:
+The "ui-logon" is the server-end component. It provides the routes, authentication, authorization logic, 
+as well as the data storage. If you want to leverage the complete identification solution, you should setup "ui-logon".
+The component depends on following modules:
 + [ExpressJS](https://expressjs.com), 
 + [PassportJS](http://www.passportjs.org/), 
 + [node-authorization](https://github.com/VinceZK/authorization), 
@@ -159,10 +162,10 @@ Check the `package.json` for other related modules.
 "ui-logon" uses redis as the session store for PassportJS. So you have to install the redis server. 
 Please refer the [quick guide](https://redis.io/topics/quickstart) for how to install redis.
 
-JSON-On-Relations depends on MySql(5.6). Please refer the [How-to-use](https://github.com/VinceZK/json-on-relations)
+JSON-On-Relations depends on MySql(5.6). Please refer the [set-up guide](https://github.com/VinceZK/json-on-relations/wiki/Setup)
 on JSON-On-Relations on how to populate the data in MDB. 
 
-After get the above prerequisite done. You can now follow the steps below to setup the server:
+After get the above prerequisites done. You can now follow the steps below to setup the server:
 1. Install it to your node project:
    ```bash
    $ npm install ui-logon --save
@@ -180,20 +183,21 @@ PassportJS already provides a flexible way to let use different authentication s
 Since we mainly use the basic user&password strategy, so just register a LocalStrategy is enough.
 The default implementation is given in `ui-logon/server/Authentication.js`:
 
-It uses JSON-On-Relations(jor.Entity) to retrieve user information from the database. 
+It uses JSON-On-Relations(JOR) to retrieve user information from the database. 
 The function "getInstancePieceByID" is called to ask for the information from relation "r_user" 
-with USER_ID equals to the requested username. Please refer <https://github.com/VinceZK/json-on-relations> for the API details.
+with USER_ID equals to the requested username. Please refer 
+<https://github.com/VinceZK/json-on-relations/wiki/Internal-Functions> for the API details.
 
 After the user information is retrieved, it compares the password values. 
-If they are equal, then attach the user information to the "identity" object. 
+If they are identical, then attach the user information to the "identity" object. 
 Besides the basic user information, the "identity" is also attached with authorization derived from the assigned permission. 
 It is then use [node-authorization](https://github.com/VinceZK/authorization) to utilize authorization checks. 
 
-You can write your own logon logic, and register it with "passport.use()" function.
+You can write your own logon logic and register it with "passport.use()" function.
  
 ### The Default Routes
 The default router(`server/router.js`) is created as following. 
-`Auth.ensureAuthenticated` is used to protect endpoints that need to pass the authentication.
+`Auth.ensureAuthenticated` is used to protect endpoints which need to pass the authentication.
 You can import the default router into your route table `const router = require('ui-logon').Router`.
 ```javascript
 // Basic login with username & password
