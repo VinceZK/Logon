@@ -79,8 +79,8 @@ export class AuthObjectFieldComponent implements OnInit {
       return () => context.onChangeKey(rowIDx);
     }(this, rowID).bind(this);
 
-    this.searchHelpComponent.openSearchHelpModalByEntity('authField', 'authField',
-      exportObject, this.readonly, null, null, afterExportFn);
+    this.searchHelpComponent.openSearchHelpModalByEntity('authField', 'authField', exportObject,
+      this.readonly || this.isExisting(exportObject) && exportObject.valid, null, null, afterExportFn);
   }
 
 }

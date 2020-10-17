@@ -80,7 +80,8 @@ export class AppCategoryDetailAppComponent implements OnInit {
       return () => context.onChangeKey(rowIDx);
     }(this, rowID).bind(this);
 
-    this.searchHelpComponent.openSearchHelpModalByEntity('app', 'app',
-      exportObject, this.readonly, 'APP_ID', 'APP_ID', afterExportFn);
+    this.searchHelpComponent.openSearchHelpModalByEntity('app', 'app', exportObject,
+      this.readonly || this.isExisting(exportObject) && exportObject.valid,
+      'APP_ID', 'APP_ID', afterExportFn);
   }
 }

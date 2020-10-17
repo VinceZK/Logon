@@ -74,12 +74,12 @@ export class UserRoleComponent implements OnInit {
   }
 
   onSearchHelp(rowID: number, exportObject: AbstractControl): void {
-    const afterExportFn = function (context: any, ruleIdx: number) {
-      return () => context.onChangeRoleID(ruleIdx);
+    const afterExportFn = function (context: any, roleIdx: number) {
+      return () => context.onChangeRoleID(roleIdx);
     }(this, rowID).bind(this);
 
-    this.searchHelpComponent.openSearchHelpModalBySearchHelp('ROLE', 'NAME',
-      'NAME', exportObject, this.readonly, afterExportFn);
+    this.searchHelpComponent.openSearchHelpModalBySearchHelp('ROLE', 'NAME', 'NAME',
+      exportObject, this.readonly || this.oldRole(exportObject) && exportObject.valid, afterExportFn);
   }
 
 }

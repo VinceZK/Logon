@@ -27,6 +27,6 @@ export class AppCategoriesComponent implements OnInit {
     }(this, rowID).bind(this);
 
     this.searchHelpComponent.openSearchHelpModalByEntity('category', 'r_app_category',
-      exportObject, this.readonly, null, null, afterExportFn);
+      exportObject, true, null, null, afterExportFn);
   }
 }
