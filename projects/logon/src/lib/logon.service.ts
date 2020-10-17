@@ -41,6 +41,14 @@ export class LogonService {
     );
   }
 
+  /**
+   * this method is called during logon component initialization. It tries to get the session,
+   * but without raising any errors.
+   */
+  try_get_session(): Observable<any> {
+    return this.http.get<any>(this.host ? this.host + '/api/session' : 'api/session', httpOptions);
+  }
+
   query(queryObject: QueryObject): Observable<any> {
     return this.http.post<any>(this.host ? this.host + '/api/query' : 'api/query', queryObject, httpOptions).pipe(
       catchError(this.handleError<any>('query')));

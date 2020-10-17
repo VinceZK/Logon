@@ -78,7 +78,7 @@ export class UserRoleComponent implements OnInit {
       return () => context.onChangeRoleID(ruleIdx);
     }(this, rowID).bind(this);
 
-    this.searchHelpComponent.openSearchHelpBySearchHelp('ROLE', 'NAME',
+    this.searchHelpComponent.openSearchHelpModalBySearchHelp('ROLE', 'NAME',
       'NAME', exportObject, this.readonly, afterExportFn);
   }
 
