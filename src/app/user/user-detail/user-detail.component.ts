@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Message, MessageService} from 'ui-message-angular';
-import {msgStore} from '../../msgStore';
 import {switchMap} from 'rxjs/operators';
 import {IdentityService} from '../../identity.service';
 import {forkJoin, Observable, of} from 'rxjs';
@@ -90,6 +89,10 @@ export class UserDetailComponent implements OnInit {
         errorMessages.forEach( msg => this.messageService.add(msg));
       }
     });
+  }
+
+  return2List(): void {
+    this.router.navigate(['users']);
   }
 
   getAttrCtrlFromID(fieldName: string): AttributeBase {

@@ -74,6 +74,10 @@ export class AuthObjectDetailComponent implements OnInit {
     });
   }
 
+  return2List(): void {
+    this.router.navigate(['auth-objects']);
+  }
+
   getAttrCtrlFromID(fieldName: string): AttributeBase {
     return this.attrCtrls.find( attrCtrl => attrCtrl.name === fieldName);
   }

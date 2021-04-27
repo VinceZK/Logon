@@ -74,6 +74,10 @@ export class PermissionDetailComponent implements OnInit {
     });
   }
 
+  return2List(): void {
+    this.router.navigate(['permissions']);
+  }
+
   getAttrCtrlFromID(fieldName: string): AttributeBase {
     return this.attrCtrls.find( attrCtrl => attrCtrl.name === fieldName);
   }
@@ -161,27 +165,30 @@ export class PermissionDetailComponent implements OnInit {
           auth_profile_INSTANCE_GUID: category.auth_profile_INSTANCE_GUID,
           ORDER: category.ORDER
         });
-        if (category.category) {
-          categoryCtrl.addControl('category', this.fb.group({
-            ID: category.category.ID,
-            NAME: category.category.NAME,
-            ICON: category.category.ICON
-            }));
-        }
+
+        categoryCtrl.addControl('category', this.fb.group({
+          ID: category.category.ID,
+          NAME: category.category.NAME,
+          ICON: category.category.ICON
+          }));
+
         if (category.profile) {
           categoryCtrl.addControl('profile', this.fb.group({
             PROFILE_NAME: category.profile.PROFILE_NAME,
             DESC: category.profile.DESC,
             CHANGE_TIME: category.profile.CHANGE_TIME,
-            authorizations: this.fb.array(category.profile.authorizations.map( authorization => this.fb.group(authorization) ))
+            authorizations: category.profile.authorizations ?
+              this.fb.array(category.profile.authorizations.map( authorization => this.fb.group(authorization) )) : ''
           }));
         }
+
         if (category.app) {
           categoryCtrl.addControl('app', this.fb.group({
             APP_ID: category.app.APP_ID,
             NAME: category.app.NAME
           }));
         }
+
         return categoryCtrl;
       })));
     this.mainForm.addControl('users', this.fb.array(
@@ -210,7 +217,8 @@ export class PermissionDetailComponent implements OnInit {
     return parsedRelationship;
 
     function __parseRoleCategoryProfile( relationship: Relationship, context: any): void {
-      relationship.values.forEach( value => {
+      const categories = relationship.values.sort( (a, b) => a.ORDER - b.ORDER);
+      categories.forEach( value => {
         const appCategoryInstance = value.PARTNER_INSTANCES.find(
           partnerInstance => partnerInstance.ROLE_ID === 'app_category');
         const authProfileInstance = value.PARTNER_INSTANCES.find(
@@ -305,7 +313,8 @@ export class PermissionDetailComponent implements OnInit {
             this.identityService.getPermissionDetail(permissionName).subscribe(instance => {
               if ('ENTITY_ID' in instance) {
                 this._switch2DisplayMode();
-                this._resetValue(<Entity>instance);
+                // this._resetValue(<Entity>instance);
+                this._generateMainForm(<Entity>instance);
               } else {
                 const errorMessages = <Message[]>instance;
                 errorMessages.forEach( msg => this.messageService.add(msg));
@@ -402,9 +411,14 @@ export class PermissionDetailComponent implements OnInit {
       categoryFormArray,
       this.originalValue['categories'].filter( category => category.ROW_TYPE === 'category'),
       ['CHECKED', 'COLLAPSED', 'ROW_TYPE', 'category', 'profile', 'app']);
+
+    const newCategoryIndex = [];
     if (rsCategory) {
-      rsCategory['values'].forEach( value => {
-        if (value.PARTNER_INSTANCES) { value.PARTNER_INSTANCES[1].NO_EXISTING_CHECK = true; }
+      rsCategory['values'].forEach( (value, index) => {
+        if (value.PARTNER_INSTANCES) {
+          value.PARTNER_INSTANCES[1].NO_EXISTING_CHECK = true;
+          newCategoryIndex.push(index);
+        }
       });
       changedValue['relationships'].push(rsCategory);
     }
@@ -415,10 +429,10 @@ export class PermissionDetailComponent implements OnInit {
     });
     this.operations.push({
       action: this.isNewMode ? 'createInstance' : 'changeInstance', noCommit: true,
-      replacements: newProfilesIndex.map( idx => {
+      replacements: newProfilesIndex.map( (idx, index) => {
         return {
           movePath: [idx, 'result', 'instance', 'INSTANCE_GUID'],
-            toPath: ['relationships', 0, 'values', idx, 'PARTNER_INSTANCES', 1, 'INSTANCE_GUID']
+            toPath: ['relationships', 0, 'values', newCategoryIndex[index], 'PARTNER_INSTANCES', 1, 'INSTANCE_GUID']
         };
       }),
       instance: changedValue

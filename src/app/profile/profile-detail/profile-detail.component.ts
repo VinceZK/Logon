@@ -75,6 +75,10 @@ export class ProfileDetailComponent implements OnInit {
     });
   }
 
+  return2List(): void {
+    this.router.navigate(['profiles']);
+  }
+
   getAttrCtrlFromID(fieldName: string): AttributeBase {
     return this.attrCtrls.find( attrCtrl => attrCtrl.name === fieldName);
   }

@@ -74,6 +74,10 @@ export class AppCategoryDetailComponent implements OnInit {
     });
   }
 
+  return2List(): void {
+    this.router.navigate(['app-categories']);
+  }
+
   getAttrCtrlFromID(fieldName: string): AttributeBase {
     return this.attrCtrls.find( attrCtrl => attrCtrl.name === fieldName);
   }

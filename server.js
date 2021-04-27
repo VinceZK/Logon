@@ -1,4 +1,3 @@
-const debug = require('debug')('Logon: bootstrap');
 const express = require('express');
 const app = express();
 
@@ -38,7 +37,8 @@ router.get('/*', (req, res) => { // Ensure refreshing into index.html
 });
 app.use('/', router);
 
-// Load Authentication
+// Load Authentication.
+// Comment if you run Angular in development mode.
 require('./server/identification').Authentication(jor);
 require('./server/controller/permission_ctrl');
 

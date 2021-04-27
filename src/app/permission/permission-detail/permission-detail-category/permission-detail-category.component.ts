@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup} from '@angular/forms';
 import {IdentityService} from '../../../identity.service';
 import {Attribute, AttributeBase, AttributeControlService, EntityService, SearchHelpComponent} from 'jor-angular';
@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid';
   templateUrl: './permission-detail-category.component.html',
   styleUrls: ['./permission-detail-category.component.css']
 })
-export class PermissionDetailCategoryComponent implements OnInit {
+export class PermissionDetailCategoryComponent implements OnInit, OnChanges {
   @Input() readonly: boolean;
   @Input() mainForm: FormGroup;
   categoryFormArray: FormArray;
@@ -33,11 +33,15 @@ export class PermissionDetailCategoryComponent implements OnInit {
   @ViewChild(AuthValueComponent, { static: true})
   private authValueComponent: AuthValueComponent;
 
-  ngOnInit() {
+  ngOnChanges() {
     this.categoryFormArray = <FormArray>this.mainForm.get('categories');
     this.categoryFormArray.controls.forEach( ctrl => {
       if ( ctrl.get('ROW_TYPE').value === 'app') { ctrl.get('CHECKED').disable(); }
     });
+  }
+
+  ngOnInit() {
+
   }
 
   checkAll(): void {

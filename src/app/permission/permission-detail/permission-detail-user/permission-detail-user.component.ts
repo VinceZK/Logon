@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormGroup} from '@angular/forms';
 import {SearchHelpComponent} from 'jor-angular';
 
@@ -7,7 +7,7 @@ import {SearchHelpComponent} from 'jor-angular';
   templateUrl: './permission-detail-user.component.html',
   styleUrls: ['./permission-detail-user.component.css']
 })
-export class PermissionDetailUserComponent implements OnInit {
+export class PermissionDetailUserComponent implements OnInit, OnChanges {
   @Input() readonly: boolean;
   @Input() mainForm: FormGroup;
   userFormArray: FormArray;
@@ -17,8 +17,12 @@ export class PermissionDetailUserComponent implements OnInit {
   @ViewChild(SearchHelpComponent, { static: true })
   private searchHelpComponent: SearchHelpComponent;
 
-  ngOnInit() {
+  ngOnChanges(): void {
     this.userFormArray = this.mainForm.get('users') as FormArray;
+  }
+
+  ngOnInit() {
+
   }
 
   onSearchHelp(rowID: number, exportObject: AbstractControl): void {

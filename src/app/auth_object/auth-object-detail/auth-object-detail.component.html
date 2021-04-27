@@ -5,6 +5,10 @@
   </div>
 
   <div class="flex-row-reverse">
+    <button class="btn btn-sm btn-outline-info mr-2" type="button" title="Return to List" id="toList"
+            (click)="return2List()" >
+      <span class="fas fa-list-ul"> To List</span>
+    </button>
     <button class="btn btn-sm btn-outline-primary mr-2" type="button" title="Edit/Display" id="editDisplay" (click)="switchEditDisplay()">
       <span *ngIf="readonly" class="fas fa-edit"> Edit</span>
       <span *ngIf="!readonly" class="fas fa-glasses"> Display</span>

@@ -80,7 +80,7 @@ export class AuthValueComponent implements OnInit, OnChanges {
         }
 
         if (selectOptions.length > 0) {
-          this.selectOptionArray = this.fb.array(selectOptions)
+          this.selectOptionArray = this.fb.array(selectOptions);
         } else {
           this.selectOptionArray = this.fb.array([this.fb.group({
             Operator: [{value: Operator.Between, disabled: this.readonly}],
