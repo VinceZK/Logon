@@ -22,8 +22,8 @@
   <dk-message></dk-message>
 </div>
 
-<div *ngIf="mainForm" class="ml-2">
-  <div class="mt-2 ml-1 row">
+<div *ngIf="mainForm">
+  <div class="mt-2 row">
     <dk-app-attribute-form2 class="col-md-6 col-lg-4"
                             [attributeControl]="getAttrCtrlFromID('APP_ID')"
                             [formGroup]="mainForm"
